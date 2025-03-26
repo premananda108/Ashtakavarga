@@ -288,10 +288,4 @@ class MainActivity : AppCompatActivity() {
         // Пересчет сумм теперь происходит автоматически через Flow/Collect в loadDataIntoUI
     }
 
-
-    // Удаляем saveData() из onStop(), так как сохранение происходит при изменении текста
-    // override fun onStop() {
-    //     super.onStop()
-    //     // saveDataToDb() // Не сохраняем здесь, чтобы избежать лишних записей
-    // }
 }

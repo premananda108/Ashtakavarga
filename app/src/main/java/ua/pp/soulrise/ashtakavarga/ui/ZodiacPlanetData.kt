@@ -1,1 +1,0 @@
-package ua.pp.soulrise.ashtakavarga.ui

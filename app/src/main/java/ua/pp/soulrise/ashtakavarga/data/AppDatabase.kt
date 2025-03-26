@@ -9,14 +9,16 @@ import androidx.room.RoomDatabase
     entities = [
         PlanetaryPositionEntity::class,
         PlanetSignSelectionEntity::class,
-        TransitEntity::class
+        TransitEntity::class,
+        UserEntity::class // <--- Добавьте UserEntity
     ],
-    version = 1, // Начинаем с версии 1 для Room. Если схема изменится, увеличивайте.
-    exportSchema = false // Отключаем экспорт схемы для простоты
+    version = 2, // <--- Увеличьте версию базы данных
+    exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun astrologyDao(): AstrologyDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile
@@ -29,7 +31,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "astrology_database_room" // Новое имя файла БД
                 )
-                    // .addMigrations(...) // Добавьте миграции при изменении схемы в будущем
+                    //.fallbackToDestructiveMigration()  // Добавьте миграции при изменении схемы в будущем
                     // .fallbackToDestructiveMigration() // Или используйте это для очистки при обновлении версии (ТЕРЯЕТ ДАННЫЕ!)
                     .build()
                 INSTANCE = instance

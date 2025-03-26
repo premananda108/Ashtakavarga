@@ -46,9 +46,9 @@ enum class QualityLevel(val level: Int, override val description: String, overri
 }
 
 enum class modQuality(val level: Int, override val description: String, override val color: Int) : PlanetSignActivity.QualityInfoProvider<modQuality> {
-    DETERIORATION(0, "🙁 ухудшение", Color.parseColor("#FF4400")), // Красный
+    DETERIORATION(0, "🙁 ухудшение", Color.parseColor("#FF0000")), // Красный
     UNCHANGED(1, "😐 без изменений", Color.parseColor("#FFA500")), // Оранжевый
-    ENHANCEMENT(2, "🙂 улучшение", Color.parseColor("#88FF00")); // Зеленый
+    ENHANCEMENT(2, "🙂 улучшение", Color.parseColor("#00FF00")); // Зеленый
 
     companion object {
         fun fromLevel(level: Int): modQuality? = entries.find { it.level == level }
@@ -56,9 +56,9 @@ enum class modQuality(val level: Int, override val description: String, override
 }
 
 enum class curQuality(val level: Int, override val description: String, override val color: Int) : PlanetSignActivity.QualityInfoProvider<curQuality> {
-    NEGATIVE(0, "🙁 негатив", Color.parseColor("#FF4400")), // Красный (0-3)
+    NEGATIVE(0, "🙁 негатив", Color.parseColor("#FF0000")), // Красный (0-3)
     MEDIUM(1, "😐 средне", Color.parseColor("#FFA500")), // Оранжевый (4)
-    POSITIVE(2, "🙂 позитив", Color.parseColor("#88FF00")); // Зеленый (5+)
+    POSITIVE(2, "🙂 позитив", Color.parseColor("#00FF00")); // Зеленый (5+)
 
     companion object {
         fun fromLevel(level: Int): curQuality? = entries.find { it.level == level }
