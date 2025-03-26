@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:stretchColumns="*">
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:gravity="left"
+                android:text="@string/header_transit" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1.6"
+                android:gravity="left"
+                android:text="@string/header_zodiac" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="@string/header_score" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/header_quality" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/header_comparison" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:text="@string/planet_sun" />
+            <Spinner
+                android:id="@+id/spinnerTransitSun"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.8" />
+            <TextView
+                android:id="@+id/tvTransitSunValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitSunQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitSunComparison"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:text="@string/planet_moon" />
+            <Spinner
+                android:id="@+id/spinnerTransitMoon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.8" />
+            <TextView
+                android:id="@+id/tvTransitMoonValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitMoonQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitMoonComparison"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:text="@string/planet_mars" />
+            <Spinner
+                android:id="@+id/spinnerTransitMars"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.8" />
+            <TextView
+                android:id="@+id/tvTransitMarsValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitMarsQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitMarsComparison"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:text="@string/planet_mercury" />
+            <Spinner
+                android:id="@+id/spinnerTransitMercury"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.8" />
+            <TextView
+                android:id="@+id/tvTransitMercuryValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitMercuryQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitMercuryComparison"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:text="@string/planet_jupiter" />
+            <Spinner
+                android:id="@+id/spinnerTransitJupiter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.8" />
+            <TextView
+                android:id="@+id/tvTransitJupiterValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitJupiterQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitJupiterComparison"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:text="@string/planet_venus" />
+            <Spinner
+                android:id="@+id/spinnerTransitVenus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.8" />
+            <TextView
+                android:id="@+id/tvTransitVenusValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitVenusQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitVenusComparison"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:text="@string/planet_saturn" />
+            <Spinner
+                android:id="@+id/spinnerTransitSaturn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.8" />
+            <TextView
+                android:id="@+id/tvTransitSaturnValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitSaturnQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvTransitSaturnComparison"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+    </TableLayout>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChartTransit"
+        android:layout_width="match_parent"
+        android:layout_height="140dp" />
+
+</LinearLayout>

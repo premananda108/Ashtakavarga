@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:stretchColumns="*">
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="left"
+                android:text="@string/header_planet" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1.7"
+                android:gravity="left"
+                android:text="@string/header_zodiac" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="@string/header_score" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="center"
+                android:text="@string/header_quality" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.4"
+                android:gravity="center"
+                android:text="@string/header_home" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:text="@string/planet_sun" />
+            <Spinner
+                android:id="@+id/spinnerSun"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7" />
+            <TextView
+                android:id="@+id/tvSunValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvSunQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvSunHome"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:text="@string/planet_moon" />
+            <Spinner
+                android:id="@+id/spinnerMoon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7" />
+            <TextView
+                android:id="@+id/tvMoonValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvMoonQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvMoonHome"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:text="@string/planet_mars" />
+            <Spinner
+                android:id="@+id/spinnerMars"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7" />
+            <TextView
+                android:id="@+id/tvMarsValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvMarsQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvMarsHome"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:text="@string/planet_mercury" />
+            <Spinner
+                android:id="@+id/spinnerMercury"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7" />
+            <TextView
+                android:id="@+id/tvMercuryValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvMercuryQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvMercuryHome"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:text="@string/planet_jupiter" />
+            <Spinner
+                android:id="@+id/spinnerJupiter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7" />
+            <TextView
+                android:id="@+id/tvJupiterValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvJupiterQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvJupiterHome"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:text="@string/planet_venus" />
+            <Spinner
+                android:id="@+id/spinnerVenus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7" />
+            <TextView
+                android:id="@+id/tvVenusValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvVenusQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvVenusHome"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:gravity="center_vertical"
+                android:text="@string/planet_saturn" />
+            <Spinner
+                android:id="@+id/spinnerSaturn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.7" />
+            <TextView
+                android:id="@+id/tvSaturnValue"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvSaturnQuality"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="-" />
+            <TextView
+                android:id="@+id/tvSaturnHome"
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="-" />
+        </TableRow>
+    </TableLayout>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChartPlanet"
+        android:layout_width="match_parent"
+        android:layout_height="140dp" />
+
+</LinearLayout>

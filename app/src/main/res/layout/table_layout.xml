@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollViewTable"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*"
+        android:padding="6dp">
+
+        <!-- Заголовок таблицы -->
+        <TableRow>
+            <TextView /> <!-- Пустая ячейка -->
+            <TextView android:text="\n\nС\nо\nл\nн\nц\nе\n☀️" android:gravity="center" />
+            <TextView android:text="\n\n\n\nЛ\nу\nн\nа\n🌙" android:gravity="center" />
+            <TextView android:text="\n\n\n\nМ\nа\nр\nс\n🔴" android:gravity="center" />
+            <TextView android:text="М\nе\nр\nк\nу\nр\nи\nй\n💫" android:gravity="center" />
+            <TextView android:text="\n\nЮ\nп\nи\nт\nе\nр\n🪐" android:gravity="center" />
+            <TextView android:text="\n\nВ\nе\nн\nе\nр\nа\n💖" android:gravity="center" />
+            <TextView android:text="\n\nС\nа\nт\nу\nр\nн\n🪐" android:gravity="center" />
+            <TextView android:text="\n\n\n\nС\nу\nм\nм\nа" android:gravity="center" />
+            <TextView android:text="\n\n\n\n\nД\nо\nм\nа" android:gravity="center" />
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_aries" />
+            <EditText android:id="@+id/etAriesSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAriesMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAriesMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAriesMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAriesJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAriesVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAriesSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvAriesSum" android:gravity="center" android:text="0" /> <!-- Сумма знака перед Дома -->
+            <EditText android:id="@+id/etAriesHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/> <!-- Дома теперь последний EditText -->
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_taurus" />
+            <EditText android:id="@+id/etTaurusSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etTaurusMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etTaurusMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etTaurusMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etTaurusJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etTaurusVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etTaurusSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvTaurusSum" android:gravity="center" android:text="0" /> <!-- Сумма знака перед Дома -->
+            <EditText android:id="@+id/etTaurusHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_gemini" />
+            <EditText android:id="@+id/etGeminiSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etGeminiMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etGeminiMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etGeminiMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etGeminiJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etGeminiVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etGeminiSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvGeminiSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etGeminiHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_cancer" />
+            <EditText android:id="@+id/etCancerSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCancerMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCancerMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCancerMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCancerJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCancerVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCancerSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvCancerSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etCancerHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_leo" />
+            <EditText android:id="@+id/etLeoSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLeoMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLeoMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLeoMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLeoJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLeoVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLeoSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvLeoSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etLeoHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_virgo" />
+            <EditText android:id="@+id/etVirgoSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etVirgoMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etVirgoMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etVirgoMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etVirgoJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etVirgoVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etVirgoSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvVirgoSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etVirgoHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_libra" />
+            <EditText android:id="@+id/etLibraSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLibraMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLibraMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLibraMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLibraJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLibraVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etLibraSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvLibraSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etLibraHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_scorpio" />
+            <EditText android:id="@+id/etScorpioSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etScorpioMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etScorpioMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etScorpioMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etScorpioJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etScorpioVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etScorpioSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvScorpioSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etScorpioHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_sagittarius" />
+            <EditText android:id="@+id/etSagittariusSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etSagittariusMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etSagittariusMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etSagittariusMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etSagittariusJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etSagittariusVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etSagittariusSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvSagittariusSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etSagittariusHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_capricorn" />
+            <EditText android:id="@+id/etCapricornSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCapricornMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCapricornMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCapricornMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCapricornJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCapricornVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etCapricornSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvCapricornSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etCapricornHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_aquarius" />
+            <EditText android:id="@+id/etAquariusSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAquariusMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAquariusMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAquariusMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAquariusJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAquariusVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etAquariusSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvAquariusSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etAquariusHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+        <TableRow>
+            <TextView android:text="@string/zodiac_pisces" />
+            <EditText android:id="@+id/etPiscesSun" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etPiscesMoon" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etPiscesMars" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etPiscesMercury" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etPiscesJupiter" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etPiscesVenus" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <EditText android:id="@+id/etPiscesSaturn" android:inputType="number" android:gravity="center" android:maxLength="1"/>
+            <TextView android:id="@+id/tvPiscesSum" android:gravity="center" android:text="0" />
+            <EditText android:id="@+id/etPiscesHouse" android:inputType="number" android:gravity="center" android:maxLength="2"/>
+        </TableRow>
+
+        <!-- Строка для сумм планет -->
+        <TableRow>
+            <TextView android:text="Сумма" /> <!-- Заголовок для сумм планет -->
+            <TextView android:id="@+id/tvSunSum" android:gravity="center" android:text="0" /> <!-- TextView для суммы Солнца -->
+            <TextView android:id="@+id/tvMoonSum" android:gravity="center" android:text="0" /> <!-- TextView для суммы Луны -->
+            <TextView android:id="@+id/tvMarsSum" android:gravity="center" android:text="0" /> <!-- TextView для суммы Марса -->
+            <TextView android:id="@+id/tvMercurySum" android:gravity="center" android:text="0" /> <!-- TextView для суммы Меркурия -->
+            <TextView android:id="@+id/tvJupiterSum" android:gravity="center" android:text="0" /> <!-- TextView для суммы Юпитера -->
+            <TextView android:id="@+id/tvVenusSum" android:gravity="center" android:text="0" /> <!-- TextView для суммы Венеры -->
+            <TextView android:id="@+id/tvSaturnSum" android:gravity="center" android:text="0" /> <!-- TextView для суммы Сатурна -->
+            <View /> <!-- Пустая ячейка в конце строки сумм знаков -->
+        </TableRow>
+
+    </TableLayout>
+</ScrollView>

@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Ashtakavarga</string>
+    <string name="data_saved">Данные сохранены</string>
+    <string name="data_saved_with_errors">Сохранены данные, кроме неверно заполненных полей</string>
+    <string name="input_number_error">Введите число</string>
+    
+    <!-- Названия планет -->
+    <string name="planet_sun">☀️Солнце</string>
+    <string name="planet_moon">🌙Луна</string>
+    <string name="planet_mars">🔴Марс</string>
+    <string name="planet_mercury">💫Меркурий</string>
+    <string name="planet_jupiter">🪐Юпитер</string>
+    <string name="planet_venus">💖Венера</string>
+    <string name="planet_saturn">🪐Сатурн</string>
+
+    <!-- Заголовки таблиц -->
+    <string name="header_planet">Планета</string>
+    <string name="header_transit">Транзит</string>
+    <string name="header_zodiac">Знак Зодиака</string>
+    <string name="header_score">Бал</string>
+    <string name="header_quality">Качество</string>
+    <string name="header_home">Дом</string>
+
+    <!-- Названия знаков зодиака -->
+    <string name="zodiac_aries">♈ Овен</string>
+    <string name="zodiac_taurus">♉ Телец</string>
+    <string name="zodiac_gemini">♊ Близнецы</string>
+    <string name="zodiac_cancer">♋ Рак</string>
+    <string name="zodiac_leo">♌ Лев</string>
+    <string name="zodiac_virgo">♍ Дева</string>
+    <string name="zodiac_libra">♎ Весы</string>
+    <string name="zodiac_scorpio">♏ Скорпион</string>
+    <string name="zodiac_sagittarius">♐ Стрелец</string>
+    <string name="zodiac_capricorn">♑ Козерог</string>
+    <string name="zodiac_aquarius">♒ Водолей</string>
+    <string name="zodiac_pisces">♓ Рыбы</string>
+    <string name="header_comparison">Сравнение с картой</string>
+</resources>
