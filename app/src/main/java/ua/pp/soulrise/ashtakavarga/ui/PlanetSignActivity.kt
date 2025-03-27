@@ -35,11 +35,11 @@ import ua.pp.soulrise.ashtakavarga.common.modQuality
 
 
 // --- ViewModel для PlanetSignActivity (Лучше вынести в отдельный файл PlanetSignViewModel.kt) ---
-class PlanetSignViewModel(private val dao: AstrologyDao) : ViewModel() {
+class PlanetSignViewModel(private val dao: AstrologyDao, private val userId: Long) : ViewModel() {
 
     // Получение данных по запросу
     suspend fun getPlanetaryPosition(planetId: Int, signId: Int): Int? {
-        return dao.getPlanetaryPosition(planetId, signId, userId = 1)?.value
+        return dao.getPlanetaryPosition(planetId, signId, userId = userId)?.value
     }
 
     suspend fun getHomeValue(signId: Int): Int? {
@@ -47,32 +47,32 @@ class PlanetSignViewModel(private val dao: AstrologyDao) : ViewModel() {
     }
 
     suspend fun getPlanetSignSelection(planetId: Int): Int? {
-        return dao.getPlanetSignSelection(planetId)?.signId
+        return dao.getPlanetSignSelection(planetId, userId = userId)?.signId
     }
 
     suspend fun getTransitSelection(planetId: Int): Int? {
-        return dao.getTransit(planetId)?.signId
+        return dao.getTransit(planetId, userId = userId)?.signId
     }
 
     // Сохранение выбора
     fun savePlanetSignSelection(planetId: Int, signId: Int) {
         viewModelScope.launch {
-            dao.savePlanetSignSelection(PlanetSignSelectionEntity(planetId = planetId, signId = signId))
+            dao.savePlanetSignSelection(PlanetSignSelectionEntity(planetId = planetId, signId = signId, userId = userId))
         }
     }
 
     fun saveTransitSelection(planetId: Int, signId: Int) {
         viewModelScope.launch {
-            dao.saveTransit(TransitEntity(planetId = planetId, signId = signId))
+            dao.saveTransit(TransitEntity(planetId = planetId, signId = signId, userId = userId))
         }
     }
 
     // Фабрика
-    class PlanetSignViewModelFactory(private val dao: AstrologyDao) : ViewModelProvider.Factory {
+    class PlanetSignViewModelFactory(private val dao: AstrologyDao, private val userId: Long) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(PlanetSignViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return PlanetSignViewModel(dao) as T
+                return PlanetSignViewModel(dao, userId) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
@@ -83,8 +83,9 @@ class PlanetSignViewModel(private val dao: AstrologyDao) : ViewModel() {
 class PlanetSignActivity : AppCompatActivity() {
 
     // ViewModel
+    private var userId: Long = 1 // Default value
     private val viewModel: PlanetSignViewModel by viewModels {
-        PlanetSignViewModel.PlanetSignViewModelFactory(AppDatabase.getDatabase(applicationContext).astrologyDao())
+        PlanetSignViewModel.PlanetSignViewModelFactory(AppDatabase.getDatabase(applicationContext).astrologyDao(), userId)
     }
 
     // Списки ID и имен остаются
@@ -113,6 +114,9 @@ class PlanetSignActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_planet_sign) // Убедитесь, что используете правильный layout
 
+        // Get userId from intent extras
+        userId = intent.getLongExtra("user_id", 1)
+
         initializeViews() // Инициализация всех View
 
         setupSpinners() // Настройка спиннеров (включая адаптеры и слушатели)
@@ -127,6 +131,13 @@ class PlanetSignActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button_main_activity).setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP // Чтобы не создавать новую MainActivity
+            startActivity(intent)
+            // finish() // Не закрываем, если хотим иметь возможность вернуться назад
+        }
+
+        findViewById<Button>(R.id.button_user_activity).setOnClickListener {
+            val intent = Intent(this, UserActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP // Чтобы не создавать новую
             startActivity(intent)
             // finish() // Не закрываем, если хотим иметь возможность вернуться назад
         }

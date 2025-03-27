@@ -15,7 +15,7 @@ data class PlanetaryPositionEntity(
     val id: Int = 0,
 
     @ColumnInfo(name = "user_id")
-    val userId: Int,
+    val userId: Long,
 
     @ColumnInfo(name = "planet_id")
     val planetId: Int,

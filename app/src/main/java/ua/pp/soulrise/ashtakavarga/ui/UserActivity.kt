@@ -47,6 +47,7 @@ class UserActivity : AppCompatActivity() {
             { userId -> // Обработчик клика по пользователю
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra("user_id", userId)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent)
             }
         )

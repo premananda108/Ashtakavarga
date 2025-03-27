@@ -18,5 +18,8 @@ data class TransitEntity(
     val planetId: Int,
 
     @ColumnInfo(name = "sign_id")
-    val signId: Int
+    val signId: Int,
+
+    @ColumnInfo(name = "user_id")
+    val userId: Long
 )

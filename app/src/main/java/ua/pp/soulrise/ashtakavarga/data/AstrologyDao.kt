@@ -12,7 +12,7 @@ import ua.pp.soulrise.ashtakavarga.common.Planet
 @Dao
 interface AstrologyDao {
     @Query("SELECT * FROM planetary_positions WHERE planet_id = :planetId AND sign_id = :signId AND user_id = :userId")
-    suspend fun getPlanetaryPosition(planetId: Int, signId: Int, userId: Int): PlanetaryPositionEntity?
+    suspend fun getPlanetaryPosition(planetId: Int, signId: Int, userId: kotlin.Long): PlanetaryPositionEntity?
 
     @Insert
     suspend fun insertPlanetaryPosition(entity: PlanetaryPositionEntity): Long
@@ -21,7 +21,7 @@ interface AstrologyDao {
     suspend fun updatePlanetaryPosition(entity: PlanetaryPositionEntity): Int
 
     @Transaction
-    suspend fun upsertPlanetaryPosition(planetId: Int, signId: Int, userId: Int, value: Int?) {
+    suspend fun upsertPlanetaryPosition(planetId: Int, signId: Int, userId: Long, value: Int?) {
         val existing = getPlanetaryPosition(planetId, signId, userId)
         if (existing != null) {
             // Обновляем только если значение изменилось или было null/стало null
@@ -34,7 +34,7 @@ interface AstrologyDao {
     }
 
     @Query("SELECT * FROM planetary_positions WHERE user_id = :userId")
-    fun getAllPlanetaryPositions(userId: Int): Flow<List<PlanetaryPositionEntity>> // Используем Flow для наблюдения
+    fun getAllPlanetaryPositions(userId: Long): Flow<List<PlanetaryPositionEntity>> // Используем Flow для наблюдения
 
     @Query("SELECT value FROM planetary_positions WHERE planet_id = :housePlanetId AND sign_id = :signId LIMIT 1")
     suspend fun getHomeValue(signId: Int, housePlanetId: Int = Planet.HOUSE): Int?
@@ -44,14 +44,14 @@ interface AstrologyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) // Заменяем при конфликте planet_id
     suspend fun savePlanetSignSelection(selection: PlanetSignSelectionEntity)
 
-    @Query("SELECT * FROM planet_sign_selections WHERE planet_id = :planetId LIMIT 1")
-    suspend fun getPlanetSignSelection(planetId: Int): PlanetSignSelectionEntity?
+    @Query("SELECT * FROM planet_sign_selections WHERE planet_id = :planetId AND user_id = :userId LIMIT 1")
+    suspend fun getPlanetSignSelection(planetId: Int, userId: kotlin.Long): PlanetSignSelectionEntity?
 
     // --- Transits ---
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) // Заменяем при конфликте planet_id
     suspend fun saveTransit(transit: TransitEntity)
 
-    @Query("SELECT * FROM transits WHERE planet_id = :planetId LIMIT 1")
-    suspend fun getTransit(planetId: Int): TransitEntity?
+    @Query("SELECT * FROM transits WHERE planet_id = :planetId AND user_id = :userId LIMIT 1")
+    suspend fun getTransit(planetId: Int, userId: kotlin.Long): TransitEntity?
 }

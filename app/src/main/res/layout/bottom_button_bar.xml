@@ -7,10 +7,17 @@
     android:padding="16dp">
 
     <Button
+        android:id="@+id/button_user_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="👤"
+        android:layout_marginEnd="2dp"/>
+
+    <Button
         android:id="@+id/button_main_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ввод данных"
+        android:text="Данные"
         android:layout_marginEnd="2dp"/>
 
     <Button

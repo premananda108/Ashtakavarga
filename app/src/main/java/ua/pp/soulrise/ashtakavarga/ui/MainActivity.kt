@@ -19,7 +19,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope // Для viewModelScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import ua.pp.soulrise.ashtakavarga.common.Planet
 import ua.pp.soulrise.ashtakavarga.common.ZodiacSign
@@ -32,19 +34,23 @@ import ua.pp.soulrise.ashtakavarga.R
 class MainViewModel(private val dao: AstrologyDao) : ViewModel() {
 
     // Получаем Flow данных из DAO
-    private var userId: Long = 1
+    private val userIdFlow = MutableStateFlow<Long>(1)
 
-    val allPositionsFlow: Flow<List<PlanetaryPositionEntity>> = dao.getAllPlanetaryPositions(userId = userId.toInt())
+    // Flow данных, который переключается при изменении userId
+    val allPositionsFlow: Flow<List<PlanetaryPositionEntity>> = userIdFlow.flatMapLatest { userId ->
+        dao.getAllPlanetaryPositions(userId.toLong())
+    }
 
     fun setUserId(newUserId: Long) {
-        userId = newUserId
+        userIdFlow.value = newUserId // Обновляем userId, что вызовет переключение Flow
     }
 
     // Функция для сохранения данных
+
     fun saveData(dataToSave: List<Triple<Int, Int, Int?>>) {
-        viewModelScope.launch { // Используем viewModelScope для корутин ViewModel
+        viewModelScope.launch {
             dataToSave.forEach { (planetId, signId, value) ->
-                dao.upsertPlanetaryPosition(planetId, signId, userId = userId.toInt(), value = value)
+                dao.upsertPlanetaryPosition(planetId, signId, userId = userIdFlow.value, value = value) // Используем актуальный userId из Flow
             }
         }
     }
@@ -305,12 +311,20 @@ class MainActivity : AppCompatActivity() {
             buttonToPlanetSign.setOnClickListener {
                 saveDataToDb() // Сохраняем данные перед переходом
                 val intent = Intent(this, PlanetSignActivity::class.java)
+                intent.putExtra("user_id", userId) // Передаем user_id в PlanetSignActivity
                 startActivity(intent)
             }
 
             val buttonToMain = binding.bottomButtonBar.buttonMainActivity
             buttonToMain.setOnClickListener {
                 // Уже на MainActivity, ничего не делаем или можно обновить страницу
+            }
+
+            val buttonToUser = binding.bottomButtonBar.buttonUserActivity
+            buttonToUser.setOnClickListener {
+                saveDataToDb() // Сохраняем данные перед переходом
+                val intent = Intent(this, UserActivity::class.java)
+                startActivity(intent)
             }
         }
 
