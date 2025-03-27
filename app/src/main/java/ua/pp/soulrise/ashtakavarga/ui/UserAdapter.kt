@@ -17,28 +17,30 @@ import ua.pp.soulrise.ashtakavarga.data.UserEntity
 import java.text.SimpleDateFormat
 import java.util.Locale
 import ua.pp.soulrise.ashtakavarga.R
+import ua.pp.soulrise.ashtakavarga.databinding.UserItemBinding
 
 class UserAdapter(
     private var users: List<UserEntity>,
     private val db: AppDatabase,
-    private val refreshList: () -> Unit
+    private val refreshList: () -> Unit,
+    private val onUserClick: (Long) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val userIdTextView: TextView = itemView.findViewById(R.id.userIdTextView)
-        val nameTextView: TextView = itemView.findViewById(R.id.nameTextView)
-        val nameEditText: EditText = itemView.findViewById(R.id.nameEditText)
-        val dateOfBirthTextView: TextView = itemView.findViewById(R.id.dateOfBirthTextView)
-        val dateOfBirthEditText: EditText = itemView.findViewById(R.id.dateOfBirthEditText)
-        val editButton: Button = itemView.findViewById(R.id.editButton)
-        val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
-        val saveButton: Button = itemView.findViewById(R.id.saveButton)
-        val cancelButton: Button = itemView.findViewById(R.id.cancelButton)
+    class UserViewHolder(private val binding: UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val userIdTextView: TextView = binding.userIdTextView
+        val nameTextView: TextView = binding.nameTextView
+        val nameEditText: EditText = binding.nameEditText
+        val dateOfBirthTextView: TextView = binding.dateOfBirthTextView
+        val dateOfBirthEditText: EditText = binding.dateOfBirthEditText
+        val editButton: Button = binding.editButton
+        val deleteButton: Button = binding.deleteButton
+        val saveButton: Button = binding.saveButton
+        val cancelButton: Button = binding.cancelButton
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.user_item, parent, false)
-        return UserViewHolder(itemView)
+        val binding = UserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return UserViewHolder(binding)
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -49,6 +51,11 @@ class UserAdapter(
         holder.dateOfBirthTextView.text = SimpleDateFormat("dd.MM.yyyy").format(user.dateOfBirth)
         holder.nameEditText.setText(user.name)
         holder.dateOfBirthEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(user.dateOfBirth))
+
+        // Добавляем обработчик клика на весь элемент
+        holder.itemView.setOnClickListener {
+            user.userId?.let { userId -> onUserClick(userId.toLong()) }
+        }
 
         holder.editButton.setOnClickListener {
             holder.nameTextView.visibility = View.GONE

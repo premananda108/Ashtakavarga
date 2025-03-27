@@ -1,5 +1,7 @@
 package ua.pp.soulrise.ashtakavarga.ui
 
+import ua.pp.soulrise.ashtakavarga.databinding.ActivityMainBinding
+
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -30,13 +32,19 @@ import ua.pp.soulrise.ashtakavarga.R
 class MainViewModel(private val dao: AstrologyDao) : ViewModel() {
 
     // Получаем Flow данных из DAO
-    val allPositionsFlow: Flow<List<PlanetaryPositionEntity>> = dao.getAllPlanetaryPositions()
+    private var userId: Long = 1
+
+    val allPositionsFlow: Flow<List<PlanetaryPositionEntity>> = dao.getAllPlanetaryPositions(userId = userId.toInt())
+
+    fun setUserId(newUserId: Long) {
+        userId = newUserId
+    }
 
     // Функция для сохранения данных
     fun saveData(dataToSave: List<Triple<Int, Int, Int?>>) {
         viewModelScope.launch { // Используем viewModelScope для корутин ViewModel
             dataToSave.forEach { (planetId, signId, value) ->
-                dao.upsertPlanetaryPosition(planetId, signId, value)
+                dao.upsertPlanetaryPosition(planetId, signId, userId = userId.toInt(), value = value)
             }
         }
     }
@@ -61,10 +69,12 @@ data class ZodiacPlanetData(
 )
 
 class MainActivity : AppCompatActivity() {
-
-    // Получаем ViewModel через делегат
+    private lateinit var binding: ActivityMainBinding
+    private var userId: Long = 1 // Default value
     private val viewModel: MainViewModel by viewModels {
-        MainViewModel.MainViewModelFactory(AppDatabase.getDatabase(applicationContext).astrologyDao())
+        MainViewModel.MainViewModelFactory(
+            AppDatabase.getDatabase(applicationContext).astrologyDao()
+        )
     }
 
     private lateinit var zodiacSumTextViews: Array<TextView>
@@ -73,219 +83,425 @@ class MainActivity : AppCompatActivity() {
 
     // Структура данных остается прежней для удобства работы с UI
     private val zodiacDataList = listOf(
-        ZodiacPlanetData(ZodiacSign.ARIES, "Овен ♈", arrayOf(R.id.etAriesSun, R.id.etAriesMoon, R.id.etAriesMars, R.id.etAriesMercury, R.id.etAriesJupiter, R.id.etAriesVenus, R.id.etAriesSaturn, R.id.etAriesHouse), R.id.tvAriesSum),
-        ZodiacPlanetData(ZodiacSign.TAURUS, "Телец ♉", arrayOf(R.id.etTaurusSun, R.id.etTaurusMoon, R.id.etTaurusMars, R.id.etTaurusMercury, R.id.etTaurusJupiter, R.id.etTaurusVenus, R.id.etTaurusSaturn, R.id.etTaurusHouse), R.id.tvTaurusSum),
-        ZodiacPlanetData(ZodiacSign.GEMINI, "Близнецы ♊", arrayOf(R.id.etGeminiSun, R.id.etGeminiMoon, R.id.etGeminiMars, R.id.etGeminiMercury, R.id.etGeminiJupiter, R.id.etGeminiVenus, R.id.etGeminiSaturn, R.id.etGeminiHouse), R.id.tvGeminiSum),
-        ZodiacPlanetData(ZodiacSign.CANCER, "Рак ♋", arrayOf(R.id.etCancerSun, R.id.etCancerMoon, R.id.etCancerMars, R.id.etCancerMercury, R.id.etCancerJupiter, R.id.etCancerVenus, R.id.etCancerSaturn, R.id.etCancerHouse), R.id.tvCancerSum),
-        ZodiacPlanetData(ZodiacSign.LEO, "Лев ♌", arrayOf(R.id.etLeoSun, R.id.etLeoMoon, R.id.etLeoMars, R.id.etLeoMercury, R.id.etLeoJupiter, R.id.etLeoVenus, R.id.etLeoSaturn, R.id.etLeoHouse), R.id.tvLeoSum),
-        ZodiacPlanetData(ZodiacSign.VIRGO, "Дева ♍", arrayOf(R.id.etVirgoSun, R.id.etVirgoMoon, R.id.etVirgoMars, R.id.etVirgoMercury, R.id.etVirgoJupiter, R.id.etVirgoVenus, R.id.etVirgoSaturn, R.id.etVirgoHouse), R.id.tvVirgoSum),
-        ZodiacPlanetData(ZodiacSign.LIBRA, "Весы ♎", arrayOf(R.id.etLibraSun, R.id.etLibraMoon, R.id.etLibraMars, R.id.etLibraMercury, R.id.etLibraJupiter, R.id.etLibraVenus, R.id.etLibraSaturn, R.id.etLibraHouse), R.id.tvLibraSum),
-        ZodiacPlanetData(ZodiacSign.SCORPIO, "Скорпион ♏", arrayOf(R.id.etScorpioSun, R.id.etScorpioMoon, R.id.etScorpioMars, R.id.etScorpioMercury, R.id.etScorpioJupiter, R.id.etScorpioVenus, R.id.etScorpioSaturn, R.id.etScorpioHouse), R.id.tvScorpioSum),
-        ZodiacPlanetData(ZodiacSign.SAGITTARIUS, "Стрелец ♐", arrayOf(R.id.etSagittariusSun, R.id.etSagittariusMoon, R.id.etSagittariusMars, R.id.etSagittariusMercury, R.id.etSagittariusJupiter, R.id.etSagittariusVenus, R.id.etSagittariusSaturn, R.id.etSagittariusHouse), R.id.tvSagittariusSum),
-        ZodiacPlanetData(ZodiacSign.CAPRICORN, "Козерог ♑", arrayOf(R.id.etCapricornSun, R.id.etCapricornMoon, R.id.etCapricornMars, R.id.etCapricornMercury, R.id.etCapricornJupiter, R.id.etCapricornVenus, R.id.etCapricornSaturn, R.id.etCapricornHouse), R.id.tvCapricornSum),
-        ZodiacPlanetData(ZodiacSign.AQUARIUS, "Водолей ♒", arrayOf(R.id.etAquariusSun, R.id.etAquariusMoon, R.id.etAquariusMars, R.id.etAquariusMercury, R.id.etAquariusJupiter, R.id.etAquariusVenus, R.id.etAquariusSaturn, R.id.etAquariusHouse), R.id.tvAquariusSum),
-        ZodiacPlanetData(ZodiacSign.PISCES, "Рыбы ♓", arrayOf(R.id.etPiscesSun, R.id.etPiscesMoon, R.id.etPiscesMars, R.id.etPiscesMercury, R.id.etPiscesJupiter, R.id.etPiscesVenus, R.id.etPiscesSaturn, R.id.etPiscesHouse), R.id.tvPiscesSum)
+        ZodiacPlanetData(
+            ZodiacSign.ARIES,
+            "Овен ♈",
+            arrayOf(
+                R.id.etAriesSun,
+                R.id.etAriesMoon,
+                R.id.etAriesMars,
+                R.id.etAriesMercury,
+                R.id.etAriesJupiter,
+                R.id.etAriesVenus,
+                R.id.etAriesSaturn,
+                R.id.etAriesHouse
+            ),
+            R.id.tvAriesSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.TAURUS,
+            "Телец ♉",
+            arrayOf(
+                R.id.etTaurusSun,
+                R.id.etTaurusMoon,
+                R.id.etTaurusMars,
+                R.id.etTaurusMercury,
+                R.id.etTaurusJupiter,
+                R.id.etTaurusVenus,
+                R.id.etTaurusSaturn,
+                R.id.etTaurusHouse
+            ),
+            R.id.tvTaurusSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.GEMINI,
+            "Близнецы ♊",
+            arrayOf(
+                R.id.etGeminiSun,
+                R.id.etGeminiMoon,
+                R.id.etGeminiMars,
+                R.id.etGeminiMercury,
+                R.id.etGeminiJupiter,
+                R.id.etGeminiVenus,
+                R.id.etGeminiSaturn,
+                R.id.etGeminiHouse
+            ),
+            R.id.tvGeminiSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.CANCER,
+            "Рак ♋",
+            arrayOf(
+                R.id.etCancerSun,
+                R.id.etCancerMoon,
+                R.id.etCancerMars,
+                R.id.etCancerMercury,
+                R.id.etCancerJupiter,
+                R.id.etCancerVenus,
+                R.id.etCancerSaturn,
+                R.id.etCancerHouse
+            ),
+            R.id.tvCancerSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.LEO,
+            "Лев ♌",
+            arrayOf(
+                R.id.etLeoSun,
+                R.id.etLeoMoon,
+                R.id.etLeoMars,
+                R.id.etLeoMercury,
+                R.id.etLeoJupiter,
+                R.id.etLeoVenus,
+                R.id.etLeoSaturn,
+                R.id.etLeoHouse
+            ),
+            R.id.tvLeoSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.VIRGO,
+            "Дева ♍",
+            arrayOf(
+                R.id.etVirgoSun,
+                R.id.etVirgoMoon,
+                R.id.etVirgoMars,
+                R.id.etVirgoMercury,
+                R.id.etVirgoJupiter,
+                R.id.etVirgoVenus,
+                R.id.etVirgoSaturn,
+                R.id.etVirgoHouse
+            ),
+            R.id.tvVirgoSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.LIBRA,
+            "Весы ♎",
+            arrayOf(
+                R.id.etLibraSun,
+                R.id.etLibraMoon,
+                R.id.etLibraMars,
+                R.id.etLibraMercury,
+                R.id.etLibraJupiter,
+                R.id.etLibraVenus,
+                R.id.etLibraSaturn,
+                R.id.etLibraHouse
+            ),
+            R.id.tvLibraSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.SCORPIO,
+            "Скорпион ♏",
+            arrayOf(
+                R.id.etScorpioSun,
+                R.id.etScorpioMoon,
+                R.id.etScorpioMars,
+                R.id.etScorpioMercury,
+                R.id.etScorpioJupiter,
+                R.id.etScorpioVenus,
+                R.id.etScorpioSaturn,
+                R.id.etScorpioHouse
+            ),
+            R.id.tvScorpioSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.SAGITTARIUS,
+            "Стрелец ♐",
+            arrayOf(
+                R.id.etSagittariusSun,
+                R.id.etSagittariusMoon,
+                R.id.etSagittariusMars,
+                R.id.etSagittariusMercury,
+                R.id.etSagittariusJupiter,
+                R.id.etSagittariusVenus,
+                R.id.etSagittariusSaturn,
+                R.id.etSagittariusHouse
+            ),
+            R.id.tvSagittariusSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.CAPRICORN,
+            "Козерог ♑",
+            arrayOf(
+                R.id.etCapricornSun,
+                R.id.etCapricornMoon,
+                R.id.etCapricornMars,
+                R.id.etCapricornMercury,
+                R.id.etCapricornJupiter,
+                R.id.etCapricornVenus,
+                R.id.etCapricornSaturn,
+                R.id.etCapricornHouse
+            ),
+            R.id.tvCapricornSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.AQUARIUS,
+            "Водолей ♒",
+            arrayOf(
+                R.id.etAquariusSun,
+                R.id.etAquariusMoon,
+                R.id.etAquariusMars,
+                R.id.etAquariusMercury,
+                R.id.etAquariusJupiter,
+                R.id.etAquariusVenus,
+                R.id.etAquariusSaturn,
+                R.id.etAquariusHouse
+            ),
+            R.id.tvAquariusSum
+        ),
+        ZodiacPlanetData(
+            ZodiacSign.PISCES,
+            "Рыбы ♓",
+            arrayOf(
+                R.id.etPiscesSun,
+                R.id.etPiscesMoon,
+                R.id.etPiscesMars,
+                R.id.etPiscesMercury,
+                R.id.etPiscesJupiter,
+                R.id.etPiscesVenus,
+                R.id.etPiscesSaturn,
+                R.id.etPiscesHouse
+            ),
+            R.id.tvPiscesSum
+        )
     )
-    private val planetIds = arrayOf(Planet.SUN, Planet.MOON, Planet.MARS, Planet.MERCURY, Planet.JUPITER, Planet.VENUS, Planet.SATURN, Planet.HOUSE)
-    private val planetSumTextViewIds = arrayOf(R.id.tvSunSum, R.id.tvMoonSum, R.id.tvMarsSum, R.id.tvMercurySum, R.id.tvJupiterSum, R.id.tvVenusSum, R.id.tvSaturnSum)
+    private val planetIds = arrayOf(
+        Planet.SUN,
+        Planet.MOON,
+        Planet.MARS,
+        Planet.MERCURY,
+        Planet.JUPITER,
+        Planet.VENUS,
+        Planet.SATURN,
+        Planet.HOUSE
+    )
+    private val planetSumTextViewIds = arrayOf(
+        R.id.tvSunSum,
+        R.id.tvMoonSum,
+        R.id.tvMarsSum,
+        R.id.tvMercurySum,
+        R.id.tvJupiterSum,
+        R.id.tvVenusSum,
+        R.id.tvSaturnSum
+    )
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main) // Убедитесь, что используете правильный layout
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // dbHelper больше не нужен
-        // dbHelper = DatabaseHelper(this)
+        // Get userId from intent extras
+        userId = intent.getLongExtra("user_id", 1)
+        viewModel.setUserId(userId) // Update ViewModel's userId
 
-        initSumTextViews()
-        initEditTextListAndListeners() // Инициализируем EditText и слушатели до загрузки данных
-        observeDatabaseChanges() // Наблюдаем за изменениями в БД
+            // dbHelper больше не нужен
+            // dbHelper = DatabaseHelper(this)
 
-        val buttonToPlanetSign = findViewById<Button>(R.id.button_planet_sign_activity)
-        buttonToPlanetSign.setOnClickListener {
-            saveDataToDb() // Сохраняем данные перед переходом
-            val intent = Intent(this, PlanetSignActivity::class.java)
-            startActivity(intent)
-        }
+            initSumTextViews()
+            initEditTextListAndListeners() // Инициализируем EditText и слушатели до загрузки данных
+            observeDatabaseChanges() // Наблюдаем за изменениями в БД
 
-        val buttonToMain = findViewById<Button>(R.id.button_main_activity)
-        buttonToMain.setOnClickListener {
-            // Уже на MainActivity, ничего не делаем или можно обновить страницу
-        }
-    }
+            val buttonToPlanetSign = binding.bottomButtonBar.buttonPlanetSignActivity
+            buttonToPlanetSign.setOnClickListener {
+                saveDataToDb() // Сохраняем данные перед переходом
+                val intent = Intent(this, PlanetSignActivity::class.java)
+                startActivity(intent)
+            }
 
-    // Наблюдение за Flow из ViewModel
-    private fun observeDatabaseChanges() {
-        lifecycleScope.launch {
-            viewModel.allPositionsFlow.collect { positions ->
-                // Обновляем UI при получении новых данных
-                loadDataIntoUI(positions)
+            val buttonToMain = binding.bottomButtonBar.buttonMainActivity
+            buttonToMain.setOnClickListener {
+                // Уже на MainActivity, ничего не делаем или можно обновить страницу
             }
         }
-    }
 
-    // Загрузка данных в UI (вызывается из observeDatabaseChanges)
-    private fun loadDataIntoUI(allPositions: List<PlanetaryPositionEntity>) {
-        val zodiacSums = IntArray(zodiacSumTextViews.size)
-        val planetSums = IntArray(planetSumTextViews.size)
-
-        // Создаем Map для быстрого доступа к позициям
-        val positionMap = allPositions.associateBy { Pair(it.planetId, it.signId) }
-
-        zodiacDataList.forEachIndexed { signIndex, zodiacData ->
-            var currentZodiacSum = 0
-            zodiacData.editTextIds.forEachIndexed { planetIndex, editTextId ->
-                val editText = findViewById<EditText>(editTextId)
-                val planetId = planetIds[planetIndex]
-                // Ищем позицию в Map
-                val position = positionMap[Pair(planetId, zodiacData.signId)]
-
-                var value = 0
-                if (position?.value != null) {
-                    // Устанавливаем текст, только если он отличается, чтобы избежать рекурсии TextWatcher
-                    if (editText.text.toString() != position.value.toString()) {
-                        editText.setText(position.value.toString())
-                    }
-                    value = position.value!! // Используем !! т.к. проверили на null
-                } else {
-                    if (editText.text.isNotEmpty()) {
-                        editText.text.clear()
-                    }
-                }
-
-                if (planetId != Planet.HOUSE) {
-                    planetSums[planetIndex] += value
-                    currentZodiacSum += value
+        // Наблюдение за Flow из ViewModel
+        private fun observeDatabaseChanges() {
+            lifecycleScope.launch {
+                viewModel.allPositionsFlow.collect { positions ->
+                    // Обновляем UI при получении новых данных
+                    loadDataIntoUI(positions)
                 }
             }
-            zodiacSums[signIndex] = currentZodiacSum
         }
 
-        // Обновляем суммы
-        zodiacSumTextViews.forEachIndexed { index, textView ->
-            textView.text = zodiacSums[index].toString()
-        }
-        planetSumTextViews.forEachIndexed { index, textView ->
-            textView.text = planetSums[index].toString()
-        }
-    }
+        // Загрузка данных в UI (вызывается из observeDatabaseChanges)
+        private fun loadDataIntoUI(allPositions: List<PlanetaryPositionEntity>) {
+            val zodiacSums = IntArray(zodiacSumTextViews.size)
+            val planetSums = IntArray(planetSumTextViews.size)
 
+            // Создаем Map для быстрого доступа к позициям
+            val positionMap = allPositions.associateBy { Pair(it.planetId, it.signId) }
 
-    private fun initEditTextListAndListeners() {
-        editTextList = zodiacDataList.flatMap { zodiacData ->
-            zodiacData.editTextIds.map { findViewById<EditText>(it) }
-        }
+            zodiacDataList.forEachIndexed { signIndex, zodiacData ->
+                var currentZodiacSum = 0
+                zodiacData.editTextIds.forEachIndexed { planetIndex, editTextId ->
+                    val editText = findViewById<EditText>(editTextId)
+                    val planetId = planetIds[planetIndex]
+                    // Ищем позицию в Map
+                    val position = positionMap[Pair(planetId, zodiacData.signId)]
 
-        editTextList.forEachIndexed { index, editText ->
-            // УДАЛИТЕ старый TextWatcher, который вызывает recalculateSums()
-            // editText.addTextChangedListener(object : TextWatcher { ... })
-
-            // Добавьте новый TextWatcher, который сохраняет данные при изменении (с задержкой)
-            val debounceHandler = Handler(Looper.getMainLooper())
-            var debounceRunnable: Runnable? = null
-
-            editText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // Отменяем предыдущий запланированный вызов сохранения
-                    debounceRunnable?.let { debounceHandler.removeCallbacks(it) }
-                }
-                override fun afterTextChanged(editable: Editable?) {
-                    // Планируем сохранение через 500 мс после последнего изменения
-                    debounceRunnable = Runnable { saveDataToDb() }
-                    debounceHandler.postDelayed(debounceRunnable!!, 500) // 500ms debounce
-
-                    // Логика перехода фокуса остается
-                    val planetIndex = index % 8 // 0=Sun, 1=Moon, ..., 7=House
-                    val isHouseField = (planetIndex == 7) // Planet.HOUSE
-
-                    if (!isHouseField) { // Для всех кроме House
-                        if (editable?.length == 1) {
-                            focusNextEditText(index)
+                    var value = 0
+                    if (position?.value != null) {
+                        // Устанавливаем текст, только если он отличается, чтобы избежать рекурсии TextWatcher
+                        if (editText.text.toString() != position.value.toString()) {
+                            editText.setText(position.value.toString())
                         }
-                    } else { // Для House
-                        if (editable?.length == 2) { // Переход после 2 символов для House
-                            focusNextEditText(index)
+                        value = position.value!! // Используем !! т.к. проверили на null
+                    } else {
+                        if (editText.text.isNotEmpty()) {
+                            editText.text.clear()
                         }
                     }
-                }
-            })
 
-            // Остальные слушатели фокуса и клика остаются
-            editText.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-                if (hasFocus) {
-                    val et = view as EditText
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        et.selectAll()
-                    }, 10) // Небольшая задержка для надежности
-                }
-            }
-            editText.setOnClickListener {
-                val et = it as EditText
-                et.requestFocus()
-                et.selectAll()
-            }
-        }
-    }
-
-    // Вспомогательная функция для перехода фокуса
-    private fun focusNextEditText(currentIndex: Int) {
-        val nextIndex = currentIndex + 8 // Переход к той же планете в следующем знаке
-        if (nextIndex < editTextList.size) {
-            editTextList[nextIndex].requestFocus()
-        } else {
-            // Если это последний столбец, можно перейти к первому EditText следующей строки (если нужно)
-            // val nextRowIndex = currentIndex - (currentIndex % 8) + 8 // Начало следующей строки
-            // if (nextRowIndex < editTextList.size) {
-            //     editTextList[nextRowIndex].requestFocus()
-            // }
-            // Или просто убрать фокус
-            currentFocus?.clearFocus()
-        }
-    }
-
-
-    private fun initSumTextViews() {
-        zodiacSumTextViews = zodiacDataList.map { findViewById<TextView>(it.sumTextViewId) }.toTypedArray()
-        planetSumTextViews = planetSumTextViewIds.map { findViewById<TextView>(it) }.toTypedArray()
-    }
-
-    // Удален recalculateSums(), так как суммы обновляются в loadDataIntoUI
-
-    // Удален loadDataFromDb(), заменен на observeDatabaseChanges и loadDataIntoUI
-
-    // Сохранение данных из UI в БД через ViewModel
-    private fun saveDataToDb() {
-        val dataToSave = mutableListOf<Triple<Int, Int, Int?>>()
-        var allDataValid = true
-
-        zodiacDataList.forEach { zodiacData ->
-            zodiacData.editTextIds.forEachIndexed { planetIndex, editTextId ->
-                val editText = findViewById<EditText>(editTextId)
-                val valueStr = editText.text.toString()
-                val planetId = planetIds[planetIndex]
-                val signId = zodiacData.signId
-
-                val value: Int? = if (valueStr.isNotEmpty()) {
-                    try {
-                        valueStr.toInt()
-                    } catch (e: NumberFormatException) {
-                        // Можно показать ошибку, но не будем прерывать сохранение других полей
-                        // editText.error = getString(R.string.input_number_error)
-                        allDataValid = false // Помечаем, что есть невалидные данные
-                        null // Сохраняем null, если ввод некорректен
+                    if (planetId != Planet.HOUSE) {
+                        planetSums[planetIndex] += value
+                        currentZodiacSum += value
                     }
-                } else {
-                    null // Пустое поле сохраняем как null
                 }
-                dataToSave.add(Triple(planetId, signId, value))
+                zodiacSums[signIndex] = currentZodiacSum
+            }
+
+            // Обновляем суммы
+            zodiacSumTextViews.forEachIndexed { index, textView ->
+                textView.text = zodiacSums[index].toString()
+            }
+            planetSumTextViews.forEachIndexed { index, textView ->
+                textView.text = planetSums[index].toString()
             }
         }
 
-        // Вызываем метод сохранения в ViewModel
-        viewModel.saveData(dataToSave)
 
-        // Пересчет сумм теперь происходит автоматически через Flow/Collect в loadDataIntoUI
+        private fun initEditTextListAndListeners() {
+            editTextList = zodiacDataList.flatMap { zodiacData ->
+                zodiacData.editTextIds.map { findViewById<EditText>(it) }
+            }
+
+            editTextList.forEachIndexed { index, editText ->
+                // УДАЛИТЕ старый TextWatcher, который вызывает recalculateSums()
+                // editText.addTextChangedListener(object : TextWatcher { ... })
+
+                // Добавьте новый TextWatcher, который сохраняет данные при изменении (с задержкой)
+                val debounceHandler = Handler(Looper.getMainLooper())
+                var debounceRunnable: Runnable? = null
+
+                editText.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                        // Отменяем предыдущий запланированный вызов сохранения
+                        debounceRunnable?.let { debounceHandler.removeCallbacks(it) }
+                    }
+
+                    override fun afterTextChanged(editable: Editable?) {
+                        // Планируем сохранение через 500 мс после последнего изменения
+                        debounceRunnable = Runnable { saveDataToDb() }
+                        debounceHandler.postDelayed(debounceRunnable!!, 500) // 500ms debounce
+
+                        // Логика перехода фокуса остается
+                        val planetIndex = index % 8 // 0=Sun, 1=Moon, ..., 7=House
+                        val isHouseField = (planetIndex == 7) // Planet.HOUSE
+
+                        if (!isHouseField) { // Для всех кроме House
+                            if (editable?.length == 1) {
+                                focusNextEditText(index)
+                            }
+                        } else { // Для House
+                            if (editable?.length == 2) { // Переход после 2 символов для House
+                                focusNextEditText(index)
+                            }
+                        }
+                    }
+                })
+
+                // Остальные слушатели фокуса и клика остаются
+                editText.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+                    if (hasFocus) {
+                        val et = view as EditText
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            et.selectAll()
+                        }, 10) // Небольшая задержка для надежности
+                    }
+                }
+                editText.setOnClickListener {
+                    val et = it as EditText
+                    et.requestFocus()
+                    et.selectAll()
+                }
+            }
+        }
+
+        // Вспомогательная функция для перехода фокуса
+        private fun focusNextEditText(currentIndex: Int) {
+            val nextIndex = currentIndex + 8 // Переход к той же планете в следующем знаке
+            if (nextIndex < editTextList.size) {
+                editTextList[nextIndex].requestFocus()
+            } else {
+                // Если это последний столбец, можно перейти к первому EditText следующей строки (если нужно)
+                // val nextRowIndex = currentIndex - (currentIndex % 8) + 8 // Начало следующей строки
+                // if (nextRowIndex < editTextList.size) {
+                //     editTextList[nextRowIndex].requestFocus()
+                // }
+                // Или просто убрать фокус
+                currentFocus?.clearFocus()
+            }
+        }
+
+
+        private fun initSumTextViews() {
+            zodiacSumTextViews =
+                zodiacDataList.map { findViewById<TextView>(it.sumTextViewId) }.toTypedArray()
+            planetSumTextViews =
+                planetSumTextViewIds.map { findViewById<TextView>(it) }.toTypedArray()
+        }
+
+        // Удален recalculateSums(), так как суммы обновляются в loadDataIntoUI
+
+        // Удален loadDataFromDb(), заменен на observeDatabaseChanges и loadDataIntoUI
+
+        // Сохранение данных из UI в БД через ViewModel
+        private fun saveDataToDb() {
+            val dataToSave = mutableListOf<Triple<Int, Int, Int?>>()
+            var allDataValid = true
+
+            zodiacDataList.forEach { zodiacData ->
+                zodiacData.editTextIds.forEachIndexed { planetIndex, editTextId ->
+                    val editText = findViewById<EditText>(editTextId)
+                    val valueStr = editText.text.toString()
+                    val planetId = planetIds[planetIndex]
+                    val signId = zodiacData.signId
+
+                    val value: Int? = if (valueStr.isNotEmpty()) {
+                        try {
+                            valueStr.toInt()
+                        } catch (e: NumberFormatException) {
+                            // Можно показать ошибку, но не будем прерывать сохранение других полей
+                            // editText.error = getString(R.string.input_number_error)
+                            allDataValid = false // Помечаем, что есть невалидные данные
+                            null // Сохраняем null, если ввод некорректен
+                        }
+                    } else {
+                        null // Пустое поле сохраняем как null
+                    }
+                    dataToSave.add(Triple(planetId, signId, value))
+                }
+            }
+
+            // Вызываем метод сохранения в ViewModel
+            viewModel.saveData(dataToSave)
+
+            // Пересчет сумм теперь происходит автоматически через Flow/Collect в loadDataIntoUI
+        }
+
     }
 
-}

@@ -11,34 +11,30 @@ import ua.pp.soulrise.ashtakavarga.common.Planet
 
 @Dao
 interface AstrologyDao {
+    @Query("SELECT * FROM planetary_positions WHERE planet_id = :planetId AND sign_id = :signId AND user_id = :userId")
+    suspend fun getPlanetaryPosition(planetId: Int, signId: Int, userId: Int): PlanetaryPositionEntity?
 
-    // --- PlanetaryPositions ---
-
-    @Query("SELECT * FROM planetary_positions WHERE planet_id = :planetId AND sign_id = :signId LIMIT 1")
-    suspend fun getPlanetaryPosition(planetId: Int, signId: Int): PlanetaryPositionEntity?
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE) // Игнорируем вставку, если уже есть (для upsert)
+    @Insert
     suspend fun insertPlanetaryPosition(entity: PlanetaryPositionEntity): Long
 
     @Update
     suspend fun updatePlanetaryPosition(entity: PlanetaryPositionEntity): Int
 
-    // Метод Upsert (вставить или обновить) для PlanetaryPosition
     @Transaction
-    suspend fun upsertPlanetaryPosition(planetId: Int, signId: Int, value: Int?) {
-        val existing = getPlanetaryPosition(planetId, signId)
+    suspend fun upsertPlanetaryPosition(planetId: Int, signId: Int, userId: Int, value: Int?) {
+        val existing = getPlanetaryPosition(planetId, signId, userId)
         if (existing != null) {
             // Обновляем только если значение изменилось или было null/стало null
             if (existing.value != value) {
                 updatePlanetaryPosition(existing.copy(value = value))
             }
         } else {
-            insertPlanetaryPosition(PlanetaryPositionEntity(planetId = planetId, signId = signId, value = value))
+            insertPlanetaryPosition(PlanetaryPositionEntity(planetId = planetId, signId = signId, userId = userId, value = value))
         }
     }
 
-    @Query("SELECT * FROM planetary_positions")
-    fun getAllPlanetaryPositions(): Flow<List<PlanetaryPositionEntity>> // Используем Flow для наблюдения
+    @Query("SELECT * FROM planetary_positions WHERE user_id = :userId")
+    fun getAllPlanetaryPositions(userId: Int): Flow<List<PlanetaryPositionEntity>> // Используем Flow для наблюдения
 
     @Query("SELECT value FROM planetary_positions WHERE planet_id = :housePlanetId AND sign_id = :signId LIMIT 1")
     suspend fun getHomeValue(signId: Int, housePlanetId: Int = Planet.HOUSE): Int?

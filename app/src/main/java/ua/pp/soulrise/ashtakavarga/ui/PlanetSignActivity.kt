@@ -39,7 +39,7 @@ class PlanetSignViewModel(private val dao: AstrologyDao) : ViewModel() {
 
     // Получение данных по запросу
     suspend fun getPlanetaryPosition(planetId: Int, signId: Int): Int? {
-        return dao.getPlanetaryPosition(planetId, signId)?.value
+        return dao.getPlanetaryPosition(planetId, signId, userId = 1)?.value
     }
 
     suspend fun getHomeValue(signId: Int): Int? {

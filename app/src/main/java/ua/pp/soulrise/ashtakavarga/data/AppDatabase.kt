@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
         TransitEntity::class,
         UserEntity::class // <--- Добавьте UserEntity
     ],
-    version = 2, // <--- Увеличьте версию базы данных
+    version = 3, // Увеличена версия для поддержки user_id в planetary_positions
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -29,10 +29,9 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "astrology_database_room" // Новое имя файла БД
+                    "astrology_database_room" // Новое имя файла БД для миграции
                 )
-                    //.fallbackToDestructiveMigration()  // Добавьте миграции при изменении схемы в будущем
-                    // .fallbackToDestructiveMigration() // Или используйте это для очистки при обновлении версии (ТЕРЯЕТ ДАННЫЕ!)
+                    .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 instance

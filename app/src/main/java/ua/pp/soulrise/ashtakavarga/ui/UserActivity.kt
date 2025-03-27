@@ -1,6 +1,7 @@
 package ua.pp.soulrise.ashtakavarga.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -41,9 +42,14 @@ class UserActivity : AppCompatActivity() {
             AppDatabase::class.java, "ashtakavarga-database"
         ).build()
 
-        userAdapter = UserAdapter(emptyList(), db) {
-            loadUsers() // Refresh list after changes
-        }
+        userAdapter = UserAdapter(emptyList(), db, 
+            { loadUsers() }, // Refresh list after changes
+            { userId -> // Обработчик клика по пользователю
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("user_id", userId)
+                startActivity(intent)
+            }
+        )
         usersRecyclerView.adapter = userAdapter
         usersRecyclerView.layoutManager = LinearLayoutManager(this)
 

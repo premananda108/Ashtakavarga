@@ -35,7 +35,7 @@ android {
         jvmTarget = "11"
     }
     // Удалите buildFeatures { compose = true } и composeOptions { ... } если они были
-    viewBinding { // Добавьте это, если используете ViewBinding (рекомендуется)
+    viewBinding {
         enable = true
     }
 }
