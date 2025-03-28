@@ -86,38 +86,63 @@ class UserAdapter(
 
 
         holder.saveButton.setOnClickListener {
-            val newName = holder.nameEditText.text.toString()
+            val newName = holder.nameEditText.text.toString().trim()
             val newDateOfBirthString = holder.dateOfBirthEditText.text.toString()
 
-            val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-            val newDateOfBirth = sdf.parse(newDateOfBirthString)
-
-            if (newName.isNotEmpty() && newDateOfBirth != null) {
-                val newDateOfBirthTimestamp = newDateOfBirth.time
-                val updatedUser = user.copy(name = newName, dateOfBirth = newDateOfBirthTimestamp)
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    db.userDao().update(updatedUser)
-                    refreshList() // Refresh the list after update
-                }
-
-                holder.nameTextView.visibility = View.VISIBLE
-                holder.dateOfBirthTextView.visibility = View.VISIBLE
-                holder.editButton.visibility = View.VISIBLE
-                holder.deleteButton.visibility = View.VISIBLE
-
-                holder.nameEditText.visibility = View.GONE
-                holder.dateOfBirthEditText.visibility = View.GONE
-                holder.saveButton.visibility = View.GONE
-                holder.cancelButton.visibility = View.GONE
+            if (newName.isEmpty()) {
+                android.widget.Toast.makeText(holder.itemView.context, "Введите имя", android.widget.Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+            sdf.isLenient = false
+            val newDateOfBirth = try {
+                sdf.parse(newDateOfBirthString)
+            } catch (e: Exception) {
+                android.widget.Toast.makeText(holder.itemView.context, "Неверный формат даты. Используйте формат дд.мм.гггг", android.widget.Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val newDateOfBirthTimestamp = newDateOfBirth.time
+            val updatedUser = user.copy(name = newName, dateOfBirth = newDateOfBirthTimestamp)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                db.userDao().update(updatedUser)
+                refreshList() // Refresh the list after update
+            }
+
+            holder.nameTextView.visibility = View.VISIBLE
+            holder.dateOfBirthTextView.visibility = View.VISIBLE
+            holder.editButton.visibility = View.VISIBLE
+            holder.deleteButton.visibility = View.VISIBLE
+
+            holder.nameEditText.visibility = View.GONE
+            holder.dateOfBirthEditText.visibility = View.GONE
+            holder.saveButton.visibility = View.GONE
+            holder.cancelButton.visibility = View.GONE
         }
 
         holder.deleteButton.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                db.userDao().delete(user)
-                refreshList() // Refresh the list after deletion
+            val builder = android.app.AlertDialog.Builder(holder.itemView.context, android.R.style.Theme_Material_Dialog_Alert)
+            builder.setTitle("Подтверждение")
+                .setMessage("Вы действительно хотите удалить?")
+                .setPositiveButton("Да") { _, _ ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        db.userDao().delete(user)
+                        refreshList() // Refresh the list after deletion
+                    }
+                }
+                .setNegativeButton("Нет") { dialog, _ ->
+                    dialog.dismiss()
+                }
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                val positiveButton = dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+                val negativeButton = dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)
+                positiveButton.textSize = 16f
+                negativeButton.textSize = 16f
             }
+            dialog.show()
         }
     }
 

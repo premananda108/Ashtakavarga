@@ -39,8 +39,9 @@ class UserActivity : AppCompatActivity() {
 
         db = Room.databaseBuilder(
             applicationContext,
-            AppDatabase::class.java, "ashtakavarga-database"
-        ).build()
+            AppDatabase::class.java, "astrology_database_room"
+        ).fallbackToDestructiveMigration()
+        .build()
 
         userAdapter = UserAdapter(emptyList(), db, 
             { loadUsers() }, // Refresh list after changes
@@ -62,13 +63,24 @@ class UserActivity : AppCompatActivity() {
     }
 
     private fun addUser() {
-        val name = editTextName.text.toString()
+        val name = editTextName.text.toString().trim()
         val dateOfBirthString = editTextDateOfBirth.text.toString()
 
-        val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        val date = sdf.parse(dateOfBirthString)
+        if (name.isEmpty()) {
+            android.widget.Toast.makeText(this, "Введите имя", android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        if (name.isNotEmpty() && date != null) {
+        val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+        sdf.isLenient = false
+        val date = try {
+            sdf.parse(dateOfBirthString)
+        } catch (e: Exception) {
+            android.widget.Toast.makeText(this, "Неверный формат даты. Используйте формат дд.мм.гггг", android.widget.Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (date != null) {
             val dateOfBirthTimestamp = date.time
             val user = UserEntity(name = name, dateOfBirth = dateOfBirthTimestamp)
 

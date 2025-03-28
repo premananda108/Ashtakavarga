@@ -14,52 +14,61 @@
 
     <TextView
         android:id="@+id/nameTextView"
-        android:layout_width="0dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textSize="8sp"
         android:text="Имя" />
 
     <EditText
         android:id="@+id/nameEditText"
-        android:layout_width="0dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textSize="11sp"
         android:hint="Имя"
         android:inputType="text"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/dateOfBirthTextView"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Дата рождения" />
+        android:textSize="8sp"
+        android:text="Дата рождения"
+        android:singleLine="true"
+        android:ellipsize="end" />
 
     <EditText
         android:id="@+id/dateOfBirthEditText"
-        android:layout_width="0dp"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textSize="8sp"
         android:hint="Дата рождения"
         android:inputType="date"
         android:visibility="gone" />
 
     <Button
         android:id="@+id/editButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Редакт." />
+        android:layout_width="58dp"
+        android:layout_height="36dp"
+        android:textSize="8sp"
+        android:text="Ред." />
 
     <Button
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Удалить" />
+        android:layout_height="36dp"
+        android:textSize="8sp"
+        android:text="Удалить"/>
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="8sp"
         android:text="Сохранить"
         android:visibility="gone" />
 
@@ -67,6 +76,7 @@
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="8sp"
         android:text="Отмена"
         android:visibility="gone" />
 

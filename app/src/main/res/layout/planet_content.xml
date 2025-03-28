@@ -24,7 +24,7 @@
                 android:text="@string/header_zodiac" />
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="@string/header_score" />
             <TextView

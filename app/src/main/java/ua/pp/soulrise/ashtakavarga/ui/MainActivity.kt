@@ -9,7 +9,6 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels // Для viewModels делегата
@@ -20,7 +19,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope // Для viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import ua.pp.soulrise.ashtakavarga.common.Planet
@@ -300,8 +298,6 @@ class MainActivity : AppCompatActivity() {
         userId = intent.getLongExtra("user_id", 1)
         viewModel.setUserId(userId) // Update ViewModel's userId
 
-            // dbHelper больше не нужен
-            // dbHelper = DatabaseHelper(this)
 
             initSumTextViews()
             initEditTextListAndListeners() // Инициализируем EditText и слушатели до загрузки данных
@@ -418,22 +414,26 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun afterTextChanged(editable: Editable?) {
-                        // Планируем сохранение через 500 мс после последнего изменения
-                        debounceRunnable = Runnable { saveDataToDb() }
-                        debounceHandler.postDelayed(debounceRunnable!!, 500) // 500ms debounce
-
-                        // Логика перехода фокуса остается
-                        val planetIndex = index % 8 // 0=Sun, 1=Moon, ..., 7=House
-                        val isHouseField = (planetIndex == 7) // Planet.HOUSE
-
-                        if (!isHouseField) { // Для всех кроме House
-                            if (editable?.length == 1) {
-                                focusNextEditText(index)
-                            }
-                        } else { // Для House
-                            if (editable?.length == 2) { // Переход после 2 символов для House
-                                focusNextEditText(index)
-                            }
+                        val input = editable?.toString() ?: ""
+                        val filteredInput = input.filter { it.isDigit() } // Фильтруем нецифровые символы
+                        if (input != filteredInput) { // Если ввод был изменен фильтрацией
+                            editText.setText(filteredInput)
+                            editText.setSelection(filteredInput.length) // Возвращаем курсор в конец
+                            // Не используем return здесь, чтобы продолжить обработку валидного ввода
+                        }
+                    
+                        // Планируем сохранение (debounce остается)
+                        //debounceRunnable = Runnable { saveDataToDb() }
+                        //debounceHandler.postDelayed(debounceRunnable!!, 1500)
+                    
+                        // Логика перехода фокуса - УПРОЩЕНА
+                        val planetIndex = index % 8
+                        val isHouseField = (planetIndex == 7)
+                    
+                        if (!isHouseField && filteredInput.length == 1) { // Для всех кроме House
+                            focusNextEditText(index)
+                        } else if (isHouseField && filteredInput.length == 2) { // Для House
+                            focusNextEditText(index)
                         }
                     }
                 })
@@ -460,14 +460,6 @@ class MainActivity : AppCompatActivity() {
             val nextIndex = currentIndex + 8 // Переход к той же планете в следующем знаке
             if (nextIndex < editTextList.size) {
                 editTextList[nextIndex].requestFocus()
-            } else {
-                // Если это последний столбец, можно перейти к первому EditText следующей строки (если нужно)
-                // val nextRowIndex = currentIndex - (currentIndex % 8) + 8 // Начало следующей строки
-                // if (nextRowIndex < editTextList.size) {
-                //     editTextList[nextRowIndex].requestFocus()
-                // }
-                // Или просто убрать фокус
-                currentFocus?.clearFocus()
             }
         }
 
