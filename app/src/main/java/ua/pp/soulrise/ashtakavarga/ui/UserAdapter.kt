@@ -1,7 +1,6 @@
 package ua.pp.soulrise.ashtakavarga.ui
 
 import android.annotation.SuppressLint
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,6 @@ import ua.pp.soulrise.ashtakavarga.data.AppDatabase
 import ua.pp.soulrise.ashtakavarga.data.UserEntity
 import java.text.SimpleDateFormat
 import java.util.Locale
-import ua.pp.soulrise.ashtakavarga.R
 import ua.pp.soulrise.ashtakavarga.databinding.UserItemBinding
 
 class UserAdapter(
@@ -128,7 +126,7 @@ class UserAdapter(
                 .setMessage("Вы действительно хотите удалить?")
                 .setPositiveButton("Да") { _, _ ->
                     CoroutineScope(Dispatchers.IO).launch {
-                        db.userDao().delete(user)
+                        db.userDao().deleteUserWithTable(user)
                         refreshList() // Refresh the list after deletion
                     }
                 }

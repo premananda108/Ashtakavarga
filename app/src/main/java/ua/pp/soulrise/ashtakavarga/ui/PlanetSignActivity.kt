@@ -42,10 +42,6 @@ class PlanetSignViewModel(private val dao: AstrologyDao, private val userId: Lon
         return dao.getPlanetaryPosition(planetId, signId, userId = userId)?.value
     }
 
-    suspend fun getHomeValue(signId: Int): Int? {
-        return dao.getHomeValue(signId)
-    }
-
     suspend fun getPlanetSignSelection(planetId: Int): Int? {
         return dao.getPlanetSignSelection(planetId, userId = userId)?.signId
     }
@@ -284,11 +280,25 @@ class PlanetSignActivity : AppCompatActivity() {
     private fun updatePlanetData(index: Int, planetId: Int, selectedSignId: Int) {
         lifecycleScope.launch {
             val positionValue = viewModel.getPlanetaryPosition(planetId, selectedSignId)
-            val homeValue = viewModel.getHomeValue(selectedSignId)
+            val homeValue = viewModel.getPlanetaryPosition(Planet.HOUSE, selectedSignId)
+
+            if (index < 0 || index >= homeTextViews.size) {
+                return@launch
+            }
 
             // Обновляем UI для натальной планеты
             updateValueAndQuality(positionValue, valueTextViews[index], qualityTextViews[index], ::determineQualityLevel)
-            homeTextViews[index].text = homeValue?.toString() ?: "-"
+            
+            val homeTextView = homeTextViews[index]
+            if (homeTextView != null) {
+                val displayValue = if (homeValue != null) {
+                    homeValue.toString()
+                } else {
+                    "-"
+                }
+                homeTextView.text = displayValue
+            }
+
 
             // Обновляем сравнение с транзитом
             updateComparisonTextView(index)

@@ -36,8 +36,8 @@ interface AstrologyDao {
     @Query("SELECT * FROM planetary_positions WHERE user_id = :userId")
     fun getAllPlanetaryPositions(userId: Long): Flow<List<PlanetaryPositionEntity>> // Используем Flow для наблюдения
 
-    @Query("SELECT value FROM planetary_positions WHERE planet_id = :housePlanetId AND sign_id = :signId LIMIT 1")
-    suspend fun getHomeValue(signId: Int, housePlanetId: Int = Planet.HOUSE): Int?
+    @Query("SELECT value FROM planetary_positions WHERE planet_id = :housePlanetId AND sign_id = :signId AND user_id = :userId LIMIT 1")
+    suspend fun getHomeValue(signId: Int, userId: Long, housePlanetId: Int = Planet.HOUSE): Int?
 
     // --- PlanetSignSelections ---
 

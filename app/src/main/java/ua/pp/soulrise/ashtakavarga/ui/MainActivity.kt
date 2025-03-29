@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope // Для viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -45,8 +46,8 @@ class MainViewModel(private val dao: AstrologyDao) : ViewModel() {
 
     // Функция для сохранения данных
 
-    fun saveData(dataToSave: List<Triple<Int, Int, Int?>>) {
-        viewModelScope.launch {
+    fun saveData(dataToSave: List<Triple<Int, Int, Int?>>): Job {
+        return viewModelScope.launch {
             dataToSave.forEach { (planetId, signId, value) ->
                 dao.upsertPlanetaryPosition(planetId, signId, userId = userIdFlow.value, value = value) // Используем актуальный userId из Flow
             }
@@ -305,10 +306,13 @@ class MainActivity : AppCompatActivity() {
 
             val buttonToPlanetSign = binding.bottomButtonBar.buttonPlanetSignActivity
             buttonToPlanetSign.setOnClickListener {
-                saveDataToDb() // Сохраняем данные перед переходом
-                val intent = Intent(this, PlanetSignActivity::class.java)
-                intent.putExtra("user_id", userId) // Передаем user_id в PlanetSignActivity
-                startActivity(intent)
+                lifecycleScope.launch {
+                    val saveJob = saveDataToDb() // Сохраняем данные перед переходом
+                    saveJob.join() // Ждем завершения сохранения
+                    val intent = Intent(this@MainActivity, PlanetSignActivity::class.java)
+                    intent.putExtra("user_id", userId) // Передаем user_id в PlanetSignActivity
+                    startActivity(intent)
+                }
             }
 
             val buttonToMain = binding.bottomButtonBar.buttonMainActivity
@@ -318,9 +322,12 @@ class MainActivity : AppCompatActivity() {
 
             val buttonToUser = binding.bottomButtonBar.buttonUserActivity
             buttonToUser.setOnClickListener {
-                saveDataToDb() // Сохраняем данные перед переходом
-                val intent = Intent(this, UserActivity::class.java)
-                startActivity(intent)
+                lifecycleScope.launch {
+                    val saveJob = saveDataToDb() // Сохраняем данные перед переходом
+                    saveJob.join() // Ждем завершения сохранения
+                    val intent = Intent(this@MainActivity, UserActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
 
@@ -358,9 +365,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         value = position.value!! // Используем !! т.к. проверили на null
                     } else {
+                        // Очищаем поле, если значение в базе null
                         if (editText.text.isNotEmpty()) {
                             editText.text.clear()
                         }
+                        value = 0 // При отсутствии значения используем 0 для суммирования
                     }
 
                     if (planetId != Planet.HOUSE) {
@@ -421,11 +430,7 @@ class MainActivity : AppCompatActivity() {
                             editText.setSelection(filteredInput.length) // Возвращаем курсор в конец
                             // Не используем return здесь, чтобы продолжить обработку валидного ввода
                         }
-                    
-                        // Планируем сохранение (debounce остается)
-                        //debounceRunnable = Runnable { saveDataToDb() }
-                        //debounceHandler.postDelayed(debounceRunnable!!, 1500)
-                    
+                   
                         // Логика перехода фокуса - УПРОЩЕНА
                         val planetIndex = index % 8
                         val isHouseField = (planetIndex == 7)
@@ -476,7 +481,7 @@ class MainActivity : AppCompatActivity() {
         // Удален loadDataFromDb(), заменен на observeDatabaseChanges и loadDataIntoUI
 
         // Сохранение данных из UI в БД через ViewModel
-        private fun saveDataToDb() {
+        private fun saveDataToDb(): Job {
             val dataToSave = mutableListOf<Triple<Int, Int, Int?>>()
             var allDataValid = true
 
@@ -503,10 +508,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            // Вызываем метод сохранения в ViewModel
-            viewModel.saveData(dataToSave)
-
-            // Пересчет сумм теперь происходит автоматически через Flow/Collect в loadDataIntoUI
+            // Вызываем метод сохранения в ViewModel и возвращаем Job
+            return viewModel.saveData(dataToSave)
         }
 
     }
