@@ -2,82 +2,137 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp"
-    android:gravity="center_vertical">
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <TextView
-        android:id="@+id/userIdTextView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/nameTextView"
-        android:layout_width="140dp"
+        <TextView
+            android:id="@+id/userIdTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="8sp"
+            android:text="Имя" />
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="11sp"
+            android:hint="Имя"
+            android:inputType="text"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/dateOfBirthTextView"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="8sp"
+            android:text="Дата рождения"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+        <EditText
+            android:id="@+id/dateOfBirthEditText"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="8sp"
+            android:hint="Дата рождения"
+            android:inputType="date"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/timeOfBirthTextView"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="8sp"
+            android:text="Время рождения"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+        <EditText
+            android:id="@+id/timeOfBirthEditText"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="8sp"
+            android:hint="Время рождения"
+            android:inputType="time"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="8sp"
-        android:text="Имя" />
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
 
-    <EditText
-        android:id="@+id/nameEditText"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="11sp"
-        android:hint="Имя"
-        android:inputType="text"
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/birthPlaceTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="11sp"
+            android:text="Место рождения"
+            android:maxLines="2"
+            android:ellipsize="end" />
 
-    <TextView
-        android:id="@+id/dateOfBirthTextView"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="8sp"
-        android:text="Дата рождения"
-        android:singleLine="true"
-        android:ellipsize="end" />
+        <EditText
+            android:id="@+id/birthPlaceEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="11sp"
+            android:hint="Место рождения"
+            android:inputType="text"
+            android:visibility="gone" />
 
-    <EditText
-        android:id="@+id/dateOfBirthEditText"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="8sp"
-        android:hint="Дата рождения"
-        android:inputType="date"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/editButton"
+            android:layout_width="58dp"
+            android:layout_height="36dp"
+            android:textSize="8sp"
+            android:text="Ред." />
 
-    <Button
-        android:id="@+id/editButton"
-        android:layout_width="58dp"
-        android:layout_height="36dp"
-        android:textSize="8sp"
-        android:text="Ред." />
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:textSize="8sp"
+            android:text="Удалить"/>
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:textSize="8sp"
-        android:text="Удалить"/>
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:text="Сохранить"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="8sp"
-        android:text="Сохранить"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="8sp"
+            android:text="Отмена"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/cancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="8sp"
-        android:text="Отмена"
-        android:visibility="gone" />
+    </LinearLayout>
 
 </LinearLayout>

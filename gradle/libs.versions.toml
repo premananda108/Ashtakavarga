@@ -5,7 +5,9 @@ coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+lifecycleLivedataKtx = "2.7.0"
 lifecycleRuntimeKtx = "2.8.7"
+lifeDataKtx = "2.8.7" # Для Transformations
 # Добавлено:
 room = "2.6.1" # Проверьте последнюю стабильную версию
 ksp = "2.0.0-1.0.21" # Версия KSP должна соответствовать версии Kotlin
@@ -14,7 +16,7 @@ constraintlayout = "2.2.1" # Оставьте или обновите
 mpandroidchart = "v3.1.0" # Оставьте
 lifecycleViewmodelKtx = "2.8.7" # Для ViewModel (рекомендуется)
 material = "1.12.0"
-activityKtx = "1.9.1"
+activityKtx = "1.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -22,6 +24,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifeDataKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" } # Обновлено
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }

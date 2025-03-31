@@ -22,6 +22,8 @@ class UserActivity : AppCompatActivity() {
 
     private lateinit var editTextName: EditText
     private lateinit var editTextDateOfBirth: EditText
+    private lateinit var editTextTimeOfBirth: EditText
+    private lateinit var editTextBirthPlace: EditText
     private lateinit var buttonAddUser: Button
     private lateinit var usersRecyclerView: RecyclerView
     private lateinit var userAdapter: UserAdapter
@@ -34,8 +36,26 @@ class UserActivity : AppCompatActivity() {
 
         editTextName = findViewById(R.id.editTextName)
         editTextDateOfBirth = findViewById(R.id.editTextDateOfBirth)
+        editTextTimeOfBirth = findViewById(R.id.editTextTimeOfBirth)
+        editTextBirthPlace = findViewById(R.id.editTextBirthPlace)
         buttonAddUser = findViewById(R.id.buttonAddUser)
         usersRecyclerView = findViewById(R.id.usersRecyclerView)
+
+        // Добавляем TextWatcher для замены слешей на точки
+        editTextDateOfBirth.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                if (s != null) {
+                    val text = s.toString()
+                    if (text.contains("/")) {
+                        val newText = text.replace("/", ".")
+                        editTextDateOfBirth.setText(newText)
+                        editTextDateOfBirth.setSelection(newText.length)
+                    }
+                }
+            }
+        })
 
         db = Room.databaseBuilder(
             applicationContext,
@@ -82,7 +102,28 @@ class UserActivity : AppCompatActivity() {
 
         if (date != null) {
             val dateOfBirthTimestamp = date.time
-            val user = UserEntity(name = name, dateOfBirth = dateOfBirthTimestamp)
+
+            val timeOfBirthString = editTextTimeOfBirth.text.toString()
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val timeOfBirth = try {
+                timeFormat.parse(timeOfBirthString)?.time ?: 0
+            } catch (e: Exception) {
+                android.widget.Toast.makeText(this, "Неверный формат времени. Используйте формат ЧЧ:ММ", android.widget.Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val birthPlace = editTextBirthPlace.text.toString().trim()
+            if (birthPlace.length > 256) {
+                android.widget.Toast.makeText(this, "Место рождения не должно превышать 256 символов", android.widget.Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val user = UserEntity(
+                name = name,
+                dateOfBirth = dateOfBirthTimestamp,
+                timeOfBirth = timeOfBirth,
+                birthPlace = birthPlace
+            )
 
             CoroutineScope(Dispatchers.IO).launch {
                 db.userDao().insert(user)
@@ -90,6 +131,8 @@ class UserActivity : AppCompatActivity() {
                 runOnUiThread {
                     editTextName.text.clear()
                     editTextDateOfBirth.text.clear()
+                    editTextTimeOfBirth.text.clear()
+                    editTextBirthPlace.text.clear()
                 }
             }
         }

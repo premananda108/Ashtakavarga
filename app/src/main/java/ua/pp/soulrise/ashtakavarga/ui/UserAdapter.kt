@@ -30,6 +30,10 @@ class UserAdapter(
         val nameEditText: EditText = binding.nameEditText
         val dateOfBirthTextView: TextView = binding.dateOfBirthTextView
         val dateOfBirthEditText: EditText = binding.dateOfBirthEditText
+        val timeOfBirthTextView: TextView = binding.timeOfBirthTextView
+        val timeOfBirthEditText: EditText = binding.timeOfBirthEditText
+        val birthPlaceTextView: TextView = binding.birthPlaceTextView
+        val birthPlaceEditText: EditText = binding.birthPlaceEditText
         val editButton: Button = binding.editButton
         val deleteButton: Button = binding.deleteButton
         val saveButton: Button = binding.saveButton
@@ -47,22 +51,35 @@ class UserAdapter(
         holder.userIdTextView.text = user.userId.toString()
         holder.nameTextView.text = user.name
         holder.dateOfBirthTextView.text = SimpleDateFormat("dd.MM.yyyy").format(user.dateOfBirth)
+        holder.timeOfBirthTextView.text = if (user.timeOfBirth > 0) SimpleDateFormat("HH:mm").format(user.timeOfBirth) else ""
+        holder.birthPlaceTextView.text = user.birthPlace
+        
         holder.nameEditText.setText(user.name)
         holder.dateOfBirthEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(user.dateOfBirth))
+        holder.timeOfBirthEditText.setText(if (user.timeOfBirth > 0) SimpleDateFormat("HH:mm").format(user.timeOfBirth) else "")
+        holder.birthPlaceEditText.setText(user.birthPlace)
 
         // Добавляем обработчик клика на весь элемент
         holder.itemView.setOnClickListener {
-            user.userId?.let { userId -> onUserClick(userId.toLong()) }
+            user.userId?.let { userId -> 
+                // Добавляем логирование для отладки
+                android.util.Log.d("UserAdapter", "Clicked on user with ID: $userId")
+                onUserClick(userId.toLong())
+            }
         }
 
         holder.editButton.setOnClickListener {
             holder.nameTextView.visibility = View.GONE
             holder.dateOfBirthTextView.visibility = View.GONE
+            holder.timeOfBirthTextView.visibility = View.GONE
+            holder.birthPlaceTextView.visibility = View.GONE
             holder.editButton.visibility = View.GONE
             holder.deleteButton.visibility = View.GONE
 
             holder.nameEditText.visibility = View.VISIBLE
             holder.dateOfBirthEditText.visibility = View.VISIBLE
+            holder.timeOfBirthEditText.visibility = View.VISIBLE
+            holder.birthPlaceEditText.visibility = View.VISIBLE
             holder.saveButton.visibility = View.VISIBLE
             holder.cancelButton.visibility = View.VISIBLE
         }
@@ -70,22 +87,30 @@ class UserAdapter(
         holder.cancelButton.setOnClickListener {
             holder.nameTextView.visibility = View.VISIBLE
             holder.dateOfBirthTextView.visibility = View.VISIBLE
+            holder.timeOfBirthTextView.visibility = View.VISIBLE
+            holder.birthPlaceTextView.visibility = View.VISIBLE
             holder.editButton.visibility = View.VISIBLE
             holder.deleteButton.visibility = View.VISIBLE
 
             holder.nameEditText.visibility = View.GONE
             holder.dateOfBirthEditText.visibility = View.GONE
+            holder.timeOfBirthEditText.visibility = View.GONE
+            holder.birthPlaceEditText.visibility = View.GONE
             holder.saveButton.visibility = View.GONE
             holder.cancelButton.visibility = View.GONE
 
             holder.nameEditText.setText(user.name)
             holder.dateOfBirthEditText.setText(SimpleDateFormat("dd.MM.yyyy").format(user.dateOfBirth))
+            holder.timeOfBirthEditText.setText(if (user.timeOfBirth > 0) SimpleDateFormat("HH:mm").format(user.timeOfBirth) else "")
+            holder.birthPlaceEditText.setText(user.birthPlace)
         }
 
 
         holder.saveButton.setOnClickListener {
             val newName = holder.nameEditText.text.toString().trim()
             val newDateOfBirthString = holder.dateOfBirthEditText.text.toString()
+            val newTimeOfBirth = holder.timeOfBirthEditText.text.toString()
+            val newBirthPlace = holder.birthPlaceEditText.text.toString().trim()
 
             if (newName.isEmpty()) {
                 android.widget.Toast.makeText(holder.itemView.context, "Введите имя", android.widget.Toast.LENGTH_SHORT).show()
@@ -102,7 +127,24 @@ class UserAdapter(
             }
 
             val newDateOfBirthTimestamp = newDateOfBirth.time
-            val updatedUser = user.copy(name = newName, dateOfBirth = newDateOfBirthTimestamp)
+            
+            // Парсим время рождения
+            val timeSdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+            timeSdf.isLenient = false
+            val timeOfBirthMillis = try {
+                val time = timeSdf.parse(newTimeOfBirth)
+                if (time != null) time.time else 0L
+            } catch (e: Exception) {
+                android.widget.Toast.makeText(holder.itemView.context, "Неверный формат времени. Используйте формат ЧЧ:ММ", android.widget.Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            
+            val updatedUser = user.copy(
+                name = newName,
+                dateOfBirth = newDateOfBirthTimestamp,
+                timeOfBirth = timeOfBirthMillis,
+                birthPlace = newBirthPlace
+            )
 
             CoroutineScope(Dispatchers.IO).launch {
                 db.userDao().update(updatedUser)
@@ -111,11 +153,15 @@ class UserAdapter(
 
             holder.nameTextView.visibility = View.VISIBLE
             holder.dateOfBirthTextView.visibility = View.VISIBLE
+            holder.timeOfBirthTextView.visibility = View.VISIBLE
+            holder.birthPlaceTextView.visibility = View.VISIBLE
             holder.editButton.visibility = View.VISIBLE
             holder.deleteButton.visibility = View.VISIBLE
 
             holder.nameEditText.visibility = View.GONE
             holder.dateOfBirthEditText.visibility = View.GONE
+            holder.timeOfBirthEditText.visibility = View.GONE
+            holder.birthPlaceEditText.visibility = View.GONE
             holder.saveButton.visibility = View.GONE
             holder.cancelButton.visibility = View.GONE
         }

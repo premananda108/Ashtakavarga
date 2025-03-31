@@ -18,9 +18,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope // Для viewModelScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flatMapLatest
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.switchMap
 import kotlinx.coroutines.launch
 import ua.pp.soulrise.ashtakavarga.common.Planet
 import ua.pp.soulrise.ashtakavarga.common.ZodiacSign
@@ -33,15 +33,16 @@ import ua.pp.soulrise.ashtakavarga.R
 class MainViewModel(private val dao: AstrologyDao) : ViewModel() {
 
     // Получаем Flow данных из DAO
-    private val userIdFlow = MutableStateFlow<Long>(1)
+    private val userIdLiveData = MutableLiveData<Long>(1)
 
-    // Flow данных, который переключается при изменении userId
-    val allPositionsFlow: Flow<List<PlanetaryPositionEntity>> = userIdFlow.flatMapLatest { userId ->
-        dao.getAllPlanetaryPositions(userId.toLong())
+    // LiveData данных, который переключается при изменении userId
+    val allPositionsLiveData: LiveData<List<PlanetaryPositionEntity>> = userIdLiveData.switchMap { userId ->
+        dao.getAllPlanetaryPositionsLiveData(userId.toLong())
     }
 
     fun setUserId(newUserId: Long) {
-        userIdFlow.value = newUserId // Обновляем userId, что вызовет переключение Flow
+        android.util.Log.d("MainViewModel", "Обновление userId в ViewModel на: $newUserId")
+        userIdLiveData.value = newUserId // Обновляем userId, что вызовет переключение LiveData
     }
 
     // Функция для сохранения данных
@@ -49,7 +50,7 @@ class MainViewModel(private val dao: AstrologyDao) : ViewModel() {
     fun saveData(dataToSave: List<Triple<Int, Int, Int?>>): Job {
         return viewModelScope.launch {
             dataToSave.forEach { (planetId, signId, value) ->
-                dao.upsertPlanetaryPosition(planetId, signId, userId = userIdFlow.value, value = value) // Используем актуальный userId из Flow
+                dao.upsertPlanetaryPosition(planetId, signId, userId = userIdLiveData.value ?: 1L, value = value) // Используем актуальный userId из LiveData
             }
         }
     }
@@ -297,12 +298,15 @@ class MainActivity : AppCompatActivity() {
 
         // Get userId from intent extras
         userId = intent.getLongExtra("user_id", 1)
-        viewModel.setUserId(userId) // Update ViewModel's userId
-
-
-            initSumTextViews()
-            initEditTextListAndListeners() // Инициализируем EditText и слушатели до загрузки данных
-            observeDatabaseChanges() // Наблюдаем за изменениями в БД
+        android.util.Log.d("MainActivity", "Получен userId из Intent: $userId")
+        
+        // Инициализируем компоненты UI
+        initSumTextViews()
+        initEditTextListAndListeners()
+        
+        // Настраиваем наблюдение за данными и устанавливаем userId
+        observeDatabaseChanges()
+        viewModel.setUserId(userId)
 
             val buttonToPlanetSign = binding.bottomButtonBar.buttonPlanetSignActivity
             buttonToPlanetSign.setOnClickListener {
@@ -331,18 +335,26 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Наблюдение за Flow из ViewModel
+        // Наблюдение за LiveData из ViewModel
         private fun observeDatabaseChanges() {
-            lifecycleScope.launch {
-                viewModel.allPositionsFlow.collect { positions ->
-                    // Обновляем UI при получении новых данных
-                    loadDataIntoUI(positions)
+            viewModel.allPositionsLiveData.observe(this) { positions ->
+                android.util.Log.d("MainActivity", "Получены новые данные из LiveData для userId: $userId")
+                
+                // Очищаем все поля перед загрузкой новых данных
+                zodiacDataList.forEach { zodiacData ->
+                    zodiacData.editTextIds.forEach { editTextId ->
+                        findViewById<EditText>(editTextId).text.clear()
+                    }
                 }
+                
+                // Обновляем UI при получении новых данных
+                loadDataIntoUI(positions)
             }
         }
 
         // Загрузка данных в UI (вызывается из observeDatabaseChanges)
         private fun loadDataIntoUI(allPositions: List<PlanetaryPositionEntity>) {
+            android.util.Log.d("MainActivity", "Загрузка данных в UI для userId: $userId, количество позиций: ${allPositions.size}")
             val zodiacSums = IntArray(zodiacSumTextViews.size)
             val planetSums = IntArray(planetSumTextViews.size)
 
@@ -361,12 +373,14 @@ class MainActivity : AppCompatActivity() {
                     if (position?.value != null) {
                         // Устанавливаем текст, только если он отличается, чтобы избежать рекурсии TextWatcher
                         if (editText.text.toString() != position.value.toString()) {
+                            android.util.Log.d("MainActivity", "Обновление поля для userId: $userId, planetId: ${planetIds[planetIndex]}, signId: ${zodiacData.signId}, новое значение: ${position.value}")
                             editText.setText(position.value.toString())
                         }
                         value = position.value!! // Используем !! т.к. проверили на null
                     } else {
                         // Очищаем поле, если значение в базе null
                         if (editText.text.isNotEmpty()) {
+                            android.util.Log.d("MainActivity", "Очистка поля для userId: $userId, planetId: ${planetIds[planetIndex]}, signId: ${zodiacData.signId}")
                             editText.text.clear()
                         }
                         value = 0 // При отсутствии значения используем 0 для суммирования

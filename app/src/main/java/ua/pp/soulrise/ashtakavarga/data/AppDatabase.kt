@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase
         TransitEntity::class,
         UserEntity::class // <--- Добавьте UserEntity
     ],
-    version = 3, // Увеличена версия для поддержки user_id в planetary_positions
+    version = 4, // Увеличена версия для поддержки новых полей в таблице users
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

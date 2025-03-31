@@ -43,6 +43,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx) // Добавлено для Transformations
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat) // Обновлено через toml
     implementation(libs.androidx.constraintlayout) // Через toml

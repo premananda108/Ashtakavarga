@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import kotlinx.coroutines.flow.Flow
+import androidx.lifecycle.LiveData
 import ua.pp.soulrise.ashtakavarga.common.Planet
 
 @Dao
@@ -34,7 +34,7 @@ interface AstrologyDao {
     }
 
     @Query("SELECT * FROM planetary_positions WHERE user_id = :userId")
-    fun getAllPlanetaryPositions(userId: Long): Flow<List<PlanetaryPositionEntity>> // Используем Flow для наблюдения
+    fun getAllPlanetaryPositionsLiveData(userId: Long): LiveData<List<PlanetaryPositionEntity>> // Используем LiveData для наблюдения
 
     @Query("SELECT value FROM planetary_positions WHERE planet_id = :housePlanetId AND sign_id = :signId AND user_id = :userId LIMIT 1")
     suspend fun getHomeValue(signId: Int, userId: Long, housePlanetId: Int = Planet.HOUSE): Int?

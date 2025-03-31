@@ -65,7 +65,7 @@
             <TextView
                 android:id="@+id/tvSunHome"
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="-" />
         </TableRow>
@@ -96,7 +96,7 @@
             <TextView
                 android:id="@+id/tvMoonHome"
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="-" />
         </TableRow>
@@ -127,7 +127,7 @@
             <TextView
                 android:id="@+id/tvMarsHome"
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="-" />
         </TableRow>
@@ -158,7 +158,7 @@
             <TextView
                 android:id="@+id/tvMercuryHome"
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="-" />
         </TableRow>
@@ -189,7 +189,7 @@
             <TextView
                 android:id="@+id/tvJupiterHome"
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="-" />
         </TableRow>
@@ -220,7 +220,7 @@
             <TextView
                 android:id="@+id/tvVenusHome"
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="-" />
         </TableRow>
@@ -251,7 +251,7 @@
             <TextView
                 android:id="@+id/tvSaturnHome"
                 android:layout_width="0dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.3"
                 android:gravity="center"
                 android:text="-" />
         </TableRow>

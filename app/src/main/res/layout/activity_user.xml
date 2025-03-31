@@ -29,6 +29,21 @@
         android:hint="Дата рождения (ДД.ММ.ГГГГ)"
         android:inputType="date" />
 
+    <EditText
+        android:id="@+id/editTextTimeOfBirth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Время рождения (ЧЧ:ММ)"
+        android:inputType="time" />
+
+    <EditText
+        android:id="@+id/editTextBirthPlace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Место рождения"
+        android:inputType="text"
+        android:maxLength="256" />
+
     <Button
         android:id="@+id/buttonAddUser"
         android:layout_width="match_parent"
