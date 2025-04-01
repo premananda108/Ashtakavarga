@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var zodiacSumTextViews: Array<TextView>
     private lateinit var planetSumTextViews: Array<TextView>
     private lateinit var editTextList: List<EditText>
+    private var isSaving = false // Флаг для контроля состояния сохранения
 
     // Структура данных остается прежней для удобства работы с UI
     private val zodiacDataList = listOf(
@@ -290,16 +291,16 @@ class MainActivity : AppCompatActivity() {
         R.id.tvSaturnSum
     )
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
 
         // Get userId from intent extras
-        userId = intent.getLongExtra("user_id", 1)
-        android.util.Log.d("MainActivity", "Получен userId из Intent: $userId")
-        
+        handleIntent(intent)
+
+
         // Инициализируем компоненты UI
         initSumTextViews()
         initEditTextListAndListeners()
@@ -394,13 +395,7 @@ class MainActivity : AppCompatActivity() {
                 zodiacSums[signIndex] = currentZodiacSum
             }
 
-            // Обновляем суммы
-            zodiacSumTextViews.forEachIndexed { index, textView ->
-                textView.text = zodiacSums[index].toString()
-            }
-            planetSumTextViews.forEachIndexed { index, textView ->
-                textView.text = planetSums[index].toString()
-            }
+            
         }
 
 
@@ -445,14 +440,16 @@ class MainActivity : AppCompatActivity() {
                             // Не используем return здесь, чтобы продолжить обработку валидного ввода
                         }
                    
-                        // Логика перехода фокуса - УПРОЩЕНА
-                        val planetIndex = index % 8
-                        val isHouseField = (planetIndex == 7)
-                    
-                        if (!isHouseField && filteredInput.length == 1) { // Для всех кроме House
-                            focusNextEditText(index)
-                        } else if (isHouseField && filteredInput.length == 2) { // Для House
-                            focusNextEditText(index)
+                        // Логика перехода фокуса - отключена при сохранении
+                        if (!isSaving) {
+                            val planetIndex = index % 8
+                            val isHouseField = (planetIndex == 7)
+                        
+                            if (!isHouseField && filteredInput.length == 1) { // Для всех кроме House
+                                focusNextEditText(index)
+                            } else if (isHouseField && filteredInput.length == 2) { // Для House
+                                focusNextEditText(index)
+                            }
                         }
                     }
                 })
@@ -464,6 +461,7 @@ class MainActivity : AppCompatActivity() {
                         Handler(Looper.getMainLooper()).postDelayed({
                             et.selectAll()
                         }, 10) // Небольшая задержка для надежности
+                        recalculateSums() // Обновляем суммы при переходе фокуса
                     }
                 }
                 editText.setOnClickListener {
@@ -490,12 +488,42 @@ class MainActivity : AppCompatActivity() {
                 planetSumTextViewIds.map { findViewById<TextView>(it) }.toTypedArray()
         }
 
+        private fun recalculateSums() {
+            val zodiacSums = IntArray(zodiacSumTextViews.size)
+            val planetSums = IntArray(planetSumTextViews.size)
+
+            zodiacDataList.forEachIndexed { signIndex, zodiacData ->
+                var currentZodiacSum = 0
+                zodiacData.editTextIds.forEachIndexed { planetIndex, editTextId ->
+                    val editText = findViewById<EditText>(editTextId)
+                    val planetId = planetIds[planetIndex]
+                    val value = editText.text.toString().toIntOrNull() ?: 0
+
+                    if (planetId != Planet.HOUSE) {
+                        planetSums[planetIndex] += value
+                        currentZodiacSum += value
+                    }
+                }
+                zodiacSums[signIndex] = currentZodiacSum
+            }
+
+            // Обновляем текстовые поля с суммами
+            zodiacSums.forEachIndexed { index, sum ->
+                zodiacSumTextViews[index].text = sum.toString()
+            }
+
+            planetSums.forEachIndexed { index, sum ->
+                planetSumTextViews[index].text = sum.toString()
+            }
+        }
+
         // Удален recalculateSums(), так как суммы обновляются в loadDataIntoUI
 
         // Удален loadDataFromDb(), заменен на observeDatabaseChanges и loadDataIntoUI
 
         // Сохранение данных из UI в БД через ViewModel
         private fun saveDataToDb(): Job {
+            isSaving = true
             val dataToSave = mutableListOf<Triple<Int, Int, Int?>>()
             var allDataValid = true
 
@@ -523,8 +551,25 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Вызываем метод сохранения в ViewModel и возвращаем Job
-            return viewModel.saveData(dataToSave)
+            return viewModel.saveData(dataToSave).also {
+                it.invokeOnCompletion { isSaving = false }
+            }
         }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.let { handleIntent(it) }
     }
+
+    private fun handleIntent(intent: Intent) {
+        val newUserId = intent.getLongExtra("user_id", userId)
+        if (newUserId != userId) {
+            userId = newUserId
+            android.util.Log.d("MainActivity", "Получен новый userId из Intent: $userId")
+            viewModel.setUserId(userId)
+        }
+    }
+
+
+}
 

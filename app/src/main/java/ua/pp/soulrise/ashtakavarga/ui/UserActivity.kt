@@ -45,16 +45,7 @@ class UserActivity : AppCompatActivity() {
         editTextDateOfBirth.addTextChangedListener(object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: android.text.Editable?) {
-                if (s != null) {
-                    val text = s.toString()
-                    if (text.contains("/")) {
-                        val newText = text.replace("/", ".")
-                        editTextDateOfBirth.setText(newText)
-                        editTextDateOfBirth.setSelection(newText.length)
-                    }
-                }
-            }
+            override fun afterTextChanged(s: android.text.Editable?) {}
         })
 
         db = Room.databaseBuilder(

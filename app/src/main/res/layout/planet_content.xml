@@ -44,7 +44,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="0.9"
                 android:gravity="center_vertical"
-                android:text="@string/planet_sun" />
+                android:text="@string/planet_sun"
+                android:singleLine="true" />
             <Spinner
                 android:id="@+id/spinnerSun"
                 android:layout_width="0dp"
@@ -75,7 +76,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="0.9"
                 android:gravity="center_vertical"
-                android:text="@string/planet_moon" />
+                android:text="@string/planet_moon"
+                android:singleLine="true" />
             <Spinner
                 android:id="@+id/spinnerMoon"
                 android:layout_width="0dp"
@@ -106,7 +108,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="0.9"
                 android:gravity="center_vertical"
-                android:text="@string/planet_mars" />
+                android:text="@string/planet_mars"
+                android:singleLine="true" />
             <Spinner
                 android:id="@+id/spinnerMars"
                 android:layout_width="0dp"
@@ -137,7 +140,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="0.9"
                 android:gravity="center_vertical"
-                android:text="@string/planet_mercury" />
+                android:text="@string/planet_mercury"
+                android:singleLine="true" />
             <Spinner
                 android:id="@+id/spinnerMercury"
                 android:layout_width="0dp"
@@ -168,7 +172,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="0.9"
                 android:gravity="center_vertical"
-                android:text="@string/planet_jupiter" />
+                android:text="@string/planet_jupiter"
+                android:singleLine="true" />
             <Spinner
                 android:id="@+id/spinnerJupiter"
                 android:layout_width="0dp"
@@ -199,7 +204,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="0.9"
                 android:gravity="center_vertical"
-                android:text="@string/planet_venus" />
+                android:text="@string/planet_venus"
+                android:singleLine="true" />
             <Spinner
                 android:id="@+id/spinnerVenus"
                 android:layout_width="0dp"
@@ -230,7 +236,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="0.9"
                 android:gravity="center_vertical"
-                android:text="@string/planet_saturn" />
+                android:text="@string/planet_saturn"
+                android:singleLine="true" />
             <Spinner
                 android:id="@+id/spinnerSaturn"
                 android:layout_width="0dp"

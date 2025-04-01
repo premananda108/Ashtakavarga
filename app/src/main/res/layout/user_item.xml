@@ -22,7 +22,7 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="8sp"
+            android:textSize="13sp"
             android:text="Имя" />
 
         <EditText
@@ -88,7 +88,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="11sp"
+            android:textSize="8sp"
             android:text="Место рождения"
             android:maxLines="2"
             android:ellipsize="end" />
@@ -98,7 +98,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="11sp"
+            android:textSize="8sp"
             android:hint="Место рождения"
             android:inputType="text"
             android:visibility="gone" />

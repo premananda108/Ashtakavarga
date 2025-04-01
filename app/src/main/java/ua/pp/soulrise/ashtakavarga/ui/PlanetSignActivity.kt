@@ -79,10 +79,8 @@ class PlanetSignViewModel(private val dao: AstrologyDao, private val userId: Lon
 class PlanetSignActivity : AppCompatActivity() {
 
     // ViewModel
+    private lateinit var viewModel: PlanetSignViewModel
     private var userId: Long = 1 // Default value
-    private val viewModel: PlanetSignViewModel by viewModels {
-        PlanetSignViewModel.PlanetSignViewModelFactory(AppDatabase.getDatabase(applicationContext).astrologyDao(), userId)
-    }
 
     // Списки ID и имен остаются
     private val planetNames = listOf("Солнце","Луна","Марс","Меркурий","Юпитер","Венера","Сатурн")
@@ -112,6 +110,11 @@ class PlanetSignActivity : AppCompatActivity() {
 
         // Get userId from intent extras
         userId = intent.getLongExtra("user_id", 1)
+        
+        // Инициализация ViewModel с актуальным userId
+        viewModel = ViewModelProvider(this, PlanetSignViewModel.PlanetSignViewModelFactory(
+            AppDatabase.getDatabase(applicationContext).astrologyDao(), userId
+        ))[PlanetSignViewModel::class.java]
 
         initializeViews() // Инициализация всех View
 

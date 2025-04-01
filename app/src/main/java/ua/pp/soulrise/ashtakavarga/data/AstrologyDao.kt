@@ -54,4 +54,53 @@ interface AstrologyDao {
 
     @Query("SELECT * FROM transits WHERE planet_id = :planetId AND user_id = :userId LIMIT 1")
     suspend fun getTransit(planetId: Int, userId: kotlin.Long): TransitEntity?
+    
+    // === НОВЫЕ МЕТОДЫ ДЛЯ ПАКЕТНЫХ ОПЕРАЦИЙ ===
+    
+    @Insert
+    suspend fun insertPlanetaryPositions(entities: List<PlanetaryPositionEntity>): List<Long>
+    
+    @Update
+    suspend fun updatePlanetaryPositions(entities: List<PlanetaryPositionEntity>): Int
+    
+    @Query("SELECT * FROM planetary_positions WHERE user_id = :userId")
+    suspend fun getAllPlanetaryPositions(userId: Long): List<PlanetaryPositionEntity>
+    
+    @Transaction
+    suspend fun upsertPlanetaryPositions(positions: List<PlanetaryPositionEntity>) {
+        // Группируем все позиции по пользователю для оптимизации запросов
+        val positionsByUser = positions.groupBy { it.userId }
+        
+        positionsByUser.forEach { (userId, userPositions) ->
+            // Получаем все существующие позиции для данного пользователя за один запрос
+            val existingPositions = getAllPlanetaryPositions(userId)
+            val existingMap = existingPositions.associateBy { Pair(it.planetId, it.signId) }
+            
+            // Разделяем на обновления и вставки
+            val toUpdate = mutableListOf<PlanetaryPositionEntity>()
+            val toInsert = mutableListOf<PlanetaryPositionEntity>()
+            
+            userPositions.forEach { position ->
+                val key = Pair(position.planetId, position.signId)
+                val existing = existingMap[key]
+                
+                if (existing != null) {
+                    // Обновляем только если значение изменилось
+                    if (existing.value != position.value) {
+                        toUpdate.add(position.copy(id = existing.id))
+                    }
+                } else {
+                    toInsert.add(position)
+                }
+            }
+            
+            // Выполняем массовые операции
+            if (toInsert.isNotEmpty()) {
+                insertPlanetaryPositions(toInsert)
+            }
+            if (toUpdate.isNotEmpty()) {
+                updatePlanetaryPositions(toUpdate)
+            }
+        }
+    }
 }
