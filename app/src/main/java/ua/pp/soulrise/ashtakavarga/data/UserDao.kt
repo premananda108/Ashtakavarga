@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Delete
 import androidx.room.Transaction
+import com.google.gson.Gson
 
 @Dao
 interface UserDao {
@@ -40,4 +41,44 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE user_id = :userId")
     suspend fun getUserById(userId: Int): UserEntity?
+    
+    @Transaction
+    suspend fun exportUserData(userId: Int, astrologyDao: AstrologyDao): String {
+        val user = getUserById(userId) ?: return ""
+        val transits = astrologyDao.getTransitsByUserId(userId)
+        val positions = astrologyDao.getPlanetaryPositionsByUserId(userId)
+        val selections = astrologyDao.getPlanetSignSelectionsByUserId(userId)
+        
+        return Gson().toJson(UserDataExport(
+            user = user,
+            transits = transits,
+            positions = positions,
+            selections = selections
+        ))
+    }
+
+    @Transaction
+    suspend fun importUserData(jsonData: String, astrologyDao: AstrologyDao) {
+        try {
+            val data = Gson().fromJson(jsonData, UserDataExport::class.java)
+            
+            // Вставляем пользователя
+            insert(data.user)
+            
+            // Вставляем связанные данные
+            data.transits.forEach { transit ->
+                astrologyDao.insertTransit(transit)
+            }
+            
+            data.positions.forEach { position ->
+                astrologyDao.insertPlanetaryPosition(position)
+            }
+            
+            data.selections.forEach { selection ->
+                astrologyDao.insertPlanetSignSelection(selection)
+            }
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Ошибка при импорте данных: ${e.message}")
+        }
+    }
 }

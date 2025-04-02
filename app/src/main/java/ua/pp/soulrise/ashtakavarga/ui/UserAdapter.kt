@@ -1,12 +1,15 @@
 package ua.pp.soulrise.ashtakavarga.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import kotlinx.coroutines.Job
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +19,13 @@ import ua.pp.soulrise.ashtakavarga.data.UserEntity
 import java.text.SimpleDateFormat
 import java.util.Locale
 import ua.pp.soulrise.ashtakavarga.databinding.UserItemBinding
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import java.io.File
+import java.io.FileOutputStream
+import android.os.Environment
 
 class UserAdapter(
     private var users: List<UserEntity>,
@@ -23,6 +33,8 @@ class UserAdapter(
     private val refreshList: () -> Unit,
     private val onUserClick: (Long) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+    
+    private val scope = CoroutineScope(Dispatchers.Main + Job())
 
     class UserViewHolder(private val binding: UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val userIdTextView: TextView = binding.userIdTextView
@@ -38,6 +50,8 @@ class UserAdapter(
         val deleteButton: Button = binding.deleteButton
         val saveButton: Button = binding.saveButton
         val cancelButton: Button = binding.cancelButton
+        val exportButton: Button = binding.exportButton
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
@@ -65,6 +79,48 @@ class UserAdapter(
                 // Добавляем логирование для отладки
                 android.util.Log.d("UserAdapter", "Clicked on user with ID: $userId")
                 onUserClick(userId.toLong())
+            }
+        }
+        
+        holder.exportButton.setOnClickListener {
+            user.userId?.let { userId ->
+                val context = holder.itemView.context
+                scope.launch {
+                    try {
+                        val jsonData = db.userDao().exportUserData(userId, db.astrologyDao())
+                        val fileName = "user_${user.name}_${SimpleDateFormat("yyyyMMdd_HHmmss").format(System.currentTimeMillis())}.json"
+                        val file = File(context.cacheDir, fileName)
+
+                        FileOutputStream(file).use { output ->
+                            output.write(jsonData.toByteArray())
+                        }
+
+                        // Используем FileProvider для безопасного предоставления доступа к файлу
+                        val fileUri = androidx.core.content.FileProvider.getUriForFile(
+                            context,
+                            "ua.pp.soulrise.ashtakavarga.fileprovider",
+                            file
+                        )
+
+                        // Создаем Intent для отправки файла
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "application/json"
+                            putExtra(Intent.EXTRA_STREAM, fileUri)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+
+                        // Запускаем диалог выбора приложения для отправки
+                        context.startActivity(Intent.createChooser(shareIntent, "Поделиться файлом"))
+
+                        // Удаляем файл после отправки
+                        //file.delete()
+                    } catch (e: Exception) {
+                        android.util.Log.e("UserAdapter", "Error exporting data", e)
+                        launch(Dispatchers.Main) {
+                            Toast.makeText(context, "Ошибка при экспорте данных: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
         }
 
@@ -196,5 +252,38 @@ class UserAdapter(
     fun setUsers(newUsers: List<UserEntity>) {
         users = newUsers
         notifyDataSetChanged()
+    }
+
+    private fun handleImport(context: android.content.Context) {
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "application/json"
+            addCategory(Intent.CATEGORY_OPENABLE)
+        }
+
+        (context as? android.app.Activity)?.startActivityForResult(
+            Intent.createChooser(intent, "Выберите файл для импорта"),
+            IMPORT_FILE_REQUEST_CODE
+        )
+    }
+
+    fun handleImportResult(context: android.content.Context, uri: android.net.Uri) {
+        scope.launch {
+            try {
+                val jsonData = context.contentResolver.openInputStream(uri)?.use { input ->
+                    String(input.readBytes())
+                } ?: throw IllegalArgumentException("Не удалось прочитать файл")
+
+                db.userDao().importUserData(jsonData, db.astrologyDao())
+                refreshList()
+                Toast.makeText(context, "Данные успешно импортированы", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                android.util.Log.e("UserAdapter", "Error importing data", e)
+                Toast.makeText(context, "Ошибка при импорте данных: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    companion object {
+        const val IMPORT_FILE_REQUEST_CODE = 123
     }
 }

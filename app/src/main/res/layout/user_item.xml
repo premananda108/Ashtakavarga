@@ -111,11 +111,18 @@
             android:text="Ред." />
 
         <Button
-            android:id="@+id/deleteButton"
+            android:id="@+id/exportButton"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:textSize="8sp"
-            android:text="Удалить"/>
+            android:text="экспорт" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="40dp"
+            android:layout_height="36dp"
+            android:textSize="8sp"
+            android:text="🗑️"/>
 
         <Button
             android:id="@+id/saveButton"

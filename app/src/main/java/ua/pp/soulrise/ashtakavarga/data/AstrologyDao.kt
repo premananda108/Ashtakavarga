@@ -11,6 +11,14 @@ import ua.pp.soulrise.ashtakavarga.common.Planet
 
 @Dao
 interface AstrologyDao {
+    @Query("SELECT * FROM transits WHERE user_id = :userId")
+    suspend fun getTransitsByUserId(userId: Int): List<TransitEntity>
+
+    @Query("SELECT * FROM planetary_positions WHERE user_id = :userId")
+    suspend fun getPlanetaryPositionsByUserId(userId: Int): List<PlanetaryPositionEntity>
+
+    @Query("SELECT * FROM planet_sign_selections WHERE user_id = :userId")
+    suspend fun getPlanetSignSelectionsByUserId(userId: Int): List<PlanetSignSelectionEntity>
     @Query("SELECT * FROM planetary_positions WHERE planet_id = :planetId AND sign_id = :signId AND user_id = :userId")
     suspend fun getPlanetaryPosition(planetId: Int, signId: Int, userId: kotlin.Long): PlanetaryPositionEntity?
 
@@ -54,6 +62,12 @@ interface AstrologyDao {
 
     @Query("SELECT * FROM transits WHERE planet_id = :planetId AND user_id = :userId LIMIT 1")
     suspend fun getTransit(planetId: Int, userId: kotlin.Long): TransitEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTransit(transit: TransitEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlanetSignSelection(selection: PlanetSignSelectionEntity)
     
     // === НОВЫЕ МЕТОДЫ ДЛЯ ПАКЕТНЫХ ОПЕРАЦИЙ ===
     

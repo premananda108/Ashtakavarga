@@ -50,6 +50,12 @@
         android:layout_height="wrap_content"
         android:text="Добавить пользователя" />
 
+    <Button
+        android:id="@+id/importButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Импорт пользователя" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/usersRecyclerView"
         android:layout_width="match_parent"

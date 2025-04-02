@@ -19,12 +19,16 @@ import java.util.Locale
 import ua.pp.soulrise.ashtakavarga.R
 
 class UserActivity : AppCompatActivity() {
+    companion object {
+        private const val PICK_FILE_REQUEST_CODE = 1
+    }
 
     private lateinit var editTextName: EditText
     private lateinit var editTextDateOfBirth: EditText
     private lateinit var editTextTimeOfBirth: EditText
     private lateinit var editTextBirthPlace: EditText
     private lateinit var buttonAddUser: Button
+    private lateinit var importButton: Button
     private lateinit var usersRecyclerView: RecyclerView
     private lateinit var userAdapter: UserAdapter
 
@@ -39,6 +43,7 @@ class UserActivity : AppCompatActivity() {
         editTextTimeOfBirth = findViewById(R.id.editTextTimeOfBirth)
         editTextBirthPlace = findViewById(R.id.editTextBirthPlace)
         buttonAddUser = findViewById(R.id.buttonAddUser)
+        importButton = findViewById(R.id.importButton)
         usersRecyclerView = findViewById(R.id.usersRecyclerView)
 
         // Добавляем TextWatcher для замены слешей на точки
@@ -68,6 +73,13 @@ class UserActivity : AppCompatActivity() {
 
         buttonAddUser.setOnClickListener {
             addUser()
+        }
+
+        importButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "*/*"
+            }
+            startActivityForResult(intent, PICK_FILE_REQUEST_CODE)
         }
 
         loadUsers() // Load users on activity start
@@ -134,6 +146,34 @@ class UserActivity : AppCompatActivity() {
             val users = db.userDao().getAllUsers()
             runOnUiThread {
                 userAdapter.setUsers(users)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == RESULT_OK) {
+            data?.data?.let { uri ->
+                try {
+                    val jsonData = contentResolver.openInputStream(uri)?.bufferedReader().use { it?.readText() }
+                    if (jsonData != null) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                db.userDao().importUserData(jsonData, db.astrologyDao())
+                                loadUsers() // Обновляем список после импорта
+                                runOnUiThread {
+                                    android.widget.Toast.makeText(this@UserActivity, "Импорт успешно завершен", android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                            } catch (e: Exception) {
+                                runOnUiThread {
+                                    android.widget.Toast.makeText(this@UserActivity, "Ошибка при импорте: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    android.widget.Toast.makeText(this, "Ошибка при чтении файла: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
