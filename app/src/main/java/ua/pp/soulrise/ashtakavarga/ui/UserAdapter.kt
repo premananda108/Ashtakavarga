@@ -87,7 +87,7 @@ class UserAdapter(
                 val context = holder.itemView.context
                 scope.launch {
                     try {
-                        val jsonData = db.userDao().exportUserData(userId, db.astrologyDao())
+                        val jsonData = db.userDao().exportUserData(userId.toLong(), db.astrologyDao())
                         val fileName = "user_${user.name}_${SimpleDateFormat("yyyyMMdd_HHmmss").format(System.currentTimeMillis())}.json"
                         val file = File(context.cacheDir, fileName)
 

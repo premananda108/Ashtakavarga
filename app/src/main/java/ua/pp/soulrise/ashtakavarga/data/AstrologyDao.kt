@@ -12,13 +12,13 @@ import ua.pp.soulrise.ashtakavarga.common.Planet
 @Dao
 interface AstrologyDao {
     @Query("SELECT * FROM transits WHERE user_id = :userId")
-    suspend fun getTransitsByUserId(userId: Int): List<TransitEntity>
+    suspend fun getTransitsByUserId(userId: Long): List<TransitEntity>
 
     @Query("SELECT * FROM planetary_positions WHERE user_id = :userId")
-    suspend fun getPlanetaryPositionsByUserId(userId: Int): List<PlanetaryPositionEntity>
+    suspend fun getPlanetaryPositionsByUserId(userId: Long): List<PlanetaryPositionEntity>
 
     @Query("SELECT * FROM planet_sign_selections WHERE user_id = :userId")
-    suspend fun getPlanetSignSelectionsByUserId(userId: Int): List<PlanetSignSelectionEntity>
+    suspend fun getPlanetSignSelectionsByUserId(userId: Long): List<PlanetSignSelectionEntity>
     @Query("SELECT * FROM planetary_positions WHERE planet_id = :planetId AND sign_id = :signId AND user_id = :userId")
     suspend fun getPlanetaryPosition(planetId: Int, signId: Int, userId: kotlin.Long): PlanetaryPositionEntity?
 

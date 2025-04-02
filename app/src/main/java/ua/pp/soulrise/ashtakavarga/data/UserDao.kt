@@ -11,7 +11,7 @@ import com.google.gson.Gson
 @Dao
 interface UserDao {
     @Insert
-    suspend fun insert(user: UserEntity)
+    suspend fun insert(user: UserEntity): Long
 
     @Update
     suspend fun update(user: UserEntity)
@@ -20,19 +20,19 @@ interface UserDao {
     suspend fun delete(user: UserEntity)
 
     @Query("DELETE FROM transits WHERE user_id = :userId")
-    suspend fun deleteUserTransits(userId: Int)
+    suspend fun deleteUserTransits(userId: Long)
 
     @Query("DELETE FROM planet_sign_selections WHERE user_id = :userId")
-    suspend fun deletePlanetSignSelections(userId: Int)
+    suspend fun deletePlanetSignSelections(userId: Long)
 
     @Query("DELETE FROM planetary_positions WHERE user_id = :userId")
-    suspend fun deletePlanetaryPositions(userId: Int)
+    suspend fun deletePlanetaryPositions(userId: Long)
 
     @Transaction
     suspend fun deleteUserWithTable(user: UserEntity) {
-        deleteUserTransits(user.userId)
-        deletePlanetSignSelections(user.userId)
-        deletePlanetaryPositions(user.userId)
+        deleteUserTransits(user.userId.toLong())
+        deletePlanetSignSelections(user.userId.toLong())
+        deletePlanetaryPositions(user.userId.toLong())
         delete(user)
     }
 
@@ -40,10 +40,10 @@ interface UserDao {
     suspend fun getAllUsers(): List<UserEntity>
 
     @Query("SELECT * FROM users WHERE user_id = :userId")
-    suspend fun getUserById(userId: Int): UserEntity?
+    suspend fun getUserById(userId: Long): UserEntity?
     
     @Transaction
-    suspend fun exportUserData(userId: Int, astrologyDao: AstrologyDao): String {
+    suspend fun exportUserData(userId: Long, astrologyDao: AstrologyDao): String {
         val user = getUserById(userId) ?: return ""
         val transits = astrologyDao.getTransitsByUserId(userId)
         val positions = astrologyDao.getPlanetaryPositionsByUserId(userId)
@@ -62,20 +62,21 @@ interface UserDao {
         try {
             val data = Gson().fromJson(jsonData, UserDataExport::class.java)
             
-            // Вставляем пользователя
-            insert(data.user)
+            // Создаем нового пользователя с новым ID
+            val newUser = data.user.copy(userId = 0)
+            val newUserId = insert(newUser)
             
-            // Вставляем связанные данные
+            // Вставляем связанные данные с новым ID пользователя
             data.transits.forEach { transit ->
-                astrologyDao.insertTransit(transit)
+                astrologyDao.insertTransit(transit.copy(userId = newUserId))
             }
             
             data.positions.forEach { position ->
-                astrologyDao.insertPlanetaryPosition(position)
+                astrologyDao.insertPlanetaryPosition(position.copy(userId = newUserId))
             }
             
             data.selections.forEach { selection ->
-                astrologyDao.insertPlanetSignSelection(selection)
+                astrologyDao.insertPlanetSignSelection(selection.copy(userId = newUserId))
             }
         } catch (e: Exception) {
             throw IllegalArgumentException("Ошибка при импорте данных: ${e.message}")

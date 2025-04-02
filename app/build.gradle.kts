@@ -54,6 +54,7 @@ dependencies {
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.firebase.database.ktx)
     ksp(libs.androidx.room.compiler) // Используем ksp
 
     testImplementation(libs.junit)
