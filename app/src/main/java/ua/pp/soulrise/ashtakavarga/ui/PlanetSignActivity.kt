@@ -3,6 +3,7 @@ package ua.pp.soulrise.ashtakavarga.ui
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -59,7 +60,13 @@ class PlanetSignViewModel(private val dao: AstrologyDao, private val userId: Lon
 
     fun saveTransitSelection(planetId: Int, signId: Int) {
         viewModelScope.launch {
-            dao.saveTransit(TransitEntity(planetId = planetId, signId = signId, userId = userId))
+            try {
+                Log.d("TransitData", "Попытка сохранения транзита: planetId=$planetId, signId=$signId, userId=$userId")
+                dao.saveTransit(TransitEntity(planetId = planetId, signId = signId, userId = userId))
+                Log.d("TransitData", "Транзит успешно сохранен в базу данных")
+            } catch (e: Exception) {
+                Log.e("TransitData", "Ошибка при сохранении транзита: ${e.message}")
+            }
         }
     }
 
@@ -128,17 +135,15 @@ class PlanetSignActivity : AppCompatActivity() {
             // loadInitialSelections() // Перезагрузить данные?
         }
         findViewById<Button>(R.id.button_main_activity).setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP // Чтобы не создавать новую MainActivity
+            val intent = Intent(this@PlanetSignActivity, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
-            // finish() // Не закрываем, если хотим иметь возможность вернуться назад
         }
 
         findViewById<Button>(R.id.button_user_activity).setOnClickListener {
             val intent = Intent(this, UserActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP // Чтобы не создавать новую
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
-            // finish() // Не закрываем, если хотим иметь возможность вернуться назад
         }
     }
 
@@ -313,15 +318,25 @@ class PlanetSignActivity : AppCompatActivity() {
     // Обновление данных для транзитной планеты (значение, качество, сравнение)
     private fun updateTransitData(index: Int, planetId: Int, selectedSignId: Int) {
         lifecycleScope.launch {
+            Log.d("TransitData", "Обновление транзитных данных: планета=$planetId, знак=$selectedSignId")
             val positionValue = viewModel.getPlanetaryPosition(planetId, selectedSignId)
+            Log.d("TransitData", "Полученное значение позиции: $positionValue")
 
             // Обновляем UI для транзитной планеты
             updateValueAndQuality(positionValue, transitValueTextViews[index], transitQualityTextViews[index], ::currentQuality)
+            Log.d("TransitData", "UI обновлен для индекса $index")
 
             // Обновляем сравнение с наталом
             updateComparisonTextView(index)
+            
             // Обновляем транзитный график (только если инициализация завершена)
-            if (transitSpinnersInitialized) updateBarChartTransit()
+            if (transitSpinnersInitialized) {
+                updateBarChartTransit()
+                Log.d("TransitData", "Транзитный график обновлен")
+            }
+            
+            // Сохраняем выбранную позицию транзита после обновления UI и графика
+            viewModel.saveTransitSelection(planetId, selectedSignId)
         }
     }
 

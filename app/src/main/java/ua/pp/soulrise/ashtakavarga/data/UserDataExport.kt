@@ -1,16 +1,33 @@
 package ua.pp.soulrise.ashtakavarga.data
 
-import androidx.room.Ignore
 import com.google.gson.annotations.SerializedName
-import com.google.gson.annotations.Expose
 
 data class UserDataExport(
-    @Expose(serialize = false, deserialize = false)
-    val user: UserEntity,
-    @Expose(serialize = false, deserialize = false)
-    val transits: List<TransitEntity>,
-    @Expose(serialize = false, deserialize = false)
-    val positions: List<PlanetaryPositionEntity>,
-    @Expose(serialize = false, deserialize = false)
-    val selections: List<PlanetSignSelectionEntity>
+    val user: UserExportData,
+    val transits: List<TransitExportData>,
+    val positions: List<PlanetaryPositionExportData>,
+    val selections: List<PlanetSignSelectionExportData>
+)
+
+data class UserExportData(
+    val name: String,
+    val dateOfBirth: Long,
+    val timeOfBirth: Long,
+    val birthPlace: String
+)
+
+data class TransitExportData(
+    val planetId: Int,
+    val signId: Int
+)
+
+data class PlanetaryPositionExportData(
+    val planetId: Int,
+    val signId: Int,
+    val value: Int?
+)
+
+data class PlanetSignSelectionExportData(
+    val planetId: Int,
+    val signId: Int
 )

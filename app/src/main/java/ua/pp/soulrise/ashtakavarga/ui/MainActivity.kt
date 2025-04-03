@@ -37,7 +37,7 @@ class MainViewModel(private val dao: AstrologyDao) : ViewModel() {
 
     // LiveData данных, который переключается при изменении userId
     val allPositionsLiveData: LiveData<List<PlanetaryPositionEntity>> = userIdLiveData.switchMap { userId ->
-        dao.getAllPlanetaryPositionsLiveData(userId.toLong())
+        dao.getAllPlanetaryPositionsLiveData(userId)
     }
 
     fun setUserId(newUserId: Long) {
@@ -307,7 +307,7 @@ class MainActivity : AppCompatActivity() {
         
         // Настраиваем наблюдение за данными и устанавливаем userId
         observeDatabaseChanges()
-        viewModel.setUserId(userId)
+        viewModel.setUserId(userId.toLong())
 
             val buttonToPlanetSign = binding.bottomButtonBar.buttonPlanetSignActivity
             buttonToPlanetSign.setOnClickListener {
@@ -331,6 +331,7 @@ class MainActivity : AppCompatActivity() {
                     val saveJob = saveDataToDb() // Сохраняем данные перед переходом
                     saveJob.join() // Ждем завершения сохранения
                     val intent = Intent(this@MainActivity, UserActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                     startActivity(intent)
                 }
             }
@@ -405,10 +406,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             editTextList.forEachIndexed { index, editText ->
-                // УДАЛИТЕ старый TextWatcher, который вызывает recalculateSums()
-                // editText.addTextChangedListener(object : TextWatcher { ... })
-
-                // Добавьте новый TextWatcher, который сохраняет данные при изменении (с задержкой)
                 val debounceHandler = Handler(Looper.getMainLooper())
                 var debounceRunnable: Runnable? = null
 
@@ -516,10 +513,6 @@ class MainActivity : AppCompatActivity() {
                 planetSumTextViews[index].text = sum.toString()
             }
         }
-
-        // Удален recalculateSums(), так как суммы обновляются в loadDataIntoUI
-
-        // Удален loadDataFromDb(), заменен на observeDatabaseChanges и loadDataIntoUI
 
         // Сохранение данных из UI в БД через ViewModel
         private fun saveDataToDb(): Job {

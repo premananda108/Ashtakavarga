@@ -10,9 +10,9 @@ import androidx.room.RoomDatabase
         PlanetaryPositionEntity::class,
         PlanetSignSelectionEntity::class,
         TransitEntity::class,
-        UserEntity::class // <--- Добавьте UserEntity
+        UserEntity::class //
     ],
-    version = 4, // Увеличена версия для поддержки новых полей в таблице users
+    version = 10,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

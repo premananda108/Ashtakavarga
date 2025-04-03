@@ -7,8 +7,10 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "transits",
-    // Уникальный индекс по planet_id
-    indices = [Index(value = ["planet_id"], unique = true)]
+    // Уникальный индекс
+    indices = [
+        Index(value = ["user_id", "planet_id"], unique = true) // Комбінований індекс
+    ]
 )
 data class TransitEntity(
     @PrimaryKey(autoGenerate = true)

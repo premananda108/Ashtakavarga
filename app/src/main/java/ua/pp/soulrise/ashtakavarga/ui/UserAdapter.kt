@@ -78,7 +78,7 @@ class UserAdapter(
             user.userId?.let { userId -> 
                 // Добавляем логирование для отладки
                 android.util.Log.d("UserAdapter", "Clicked on user with ID: $userId")
-                onUserClick(userId.toLong())
+                onUserClick(userId)
             }
         }
         
@@ -87,8 +87,8 @@ class UserAdapter(
                 val context = holder.itemView.context
                 scope.launch {
                     try {
-                        val jsonData = db.userDao().exportUserData(userId.toLong(), db.astrologyDao())
-                        val fileName = "user_${user.name}_${SimpleDateFormat("yyyyMMdd_HHmmss").format(System.currentTimeMillis())}.json"
+                        val jsonData = db.userDao().exportUserData(userId, db.astrologyDao())
+                        val fileName = "ashta_${user.name}_${SimpleDateFormat("yyyyMMdd_HHmmss").format(System.currentTimeMillis())}.json"
                         val file = File(context.cacheDir, fileName)
 
                         FileOutputStream(file).use { output ->

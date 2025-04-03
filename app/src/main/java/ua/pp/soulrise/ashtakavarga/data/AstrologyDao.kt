@@ -20,7 +20,7 @@ interface AstrologyDao {
     @Query("SELECT * FROM planet_sign_selections WHERE user_id = :userId")
     suspend fun getPlanetSignSelectionsByUserId(userId: Long): List<PlanetSignSelectionEntity>
     @Query("SELECT * FROM planetary_positions WHERE planet_id = :planetId AND sign_id = :signId AND user_id = :userId")
-    suspend fun getPlanetaryPosition(planetId: Int, signId: Int, userId: kotlin.Long): PlanetaryPositionEntity?
+    suspend fun getPlanetaryPosition(planetId: Int, signId: Int, userId: Long): PlanetaryPositionEntity?
 
     @Insert
     suspend fun insertPlanetaryPosition(entity: PlanetaryPositionEntity): Long
@@ -37,7 +37,7 @@ interface AstrologyDao {
                 updatePlanetaryPosition(existing.copy(value = value))
             }
         } else {
-            insertPlanetaryPosition(PlanetaryPositionEntity(planetId = planetId, signId = signId, userId = userId, value = value))
+            insertPlanetaryPosition(PlanetaryPositionEntity(userId = userId, planetId = planetId, signId = signId, value = value))
         }
     }
 
@@ -101,7 +101,7 @@ interface AstrologyDao {
                 if (existing != null) {
                     // Обновляем только если значение изменилось
                     if (existing.value != position.value) {
-                        toUpdate.add(position.copy(id = existing.id))
+                        toUpdate.add(position.copy(userId = existing.userId))
                     }
                 } else {
                     toInsert.add(position)

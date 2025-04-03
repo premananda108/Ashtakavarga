@@ -8,7 +8,9 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "planet_sign_selections",
     // Уникальный индекс по planet_id
-    indices = [Index(value = ["planet_id"], unique = true)]
+    indices = [
+        Index(value = ["user_id", "planet_id"], unique = true)
+    ]
 )
 data class PlanetSignSelectionEntity(
     @PrimaryKey(autoGenerate = true)
