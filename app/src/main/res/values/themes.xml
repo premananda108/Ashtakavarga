@@ -14,5 +14,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
 
-    <style name="Theme.Ashtakavarga" parent="Base.Theme.Ashtakavarga" />
+    <style name="Theme.Ashtakavarga" parent="Base.Theme.Ashtakavarga">
+        <item name="android:textColor">@color/brown</item>
+    </style>
 </resources>

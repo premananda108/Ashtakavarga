@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
         PlanetaryPositionEntity::class,
         PlanetSignSelectionEntity::class,
         TransitEntity::class,
-        UserEntity::class //
+        UserEntity::class
     ],
     version = 10,
     exportSchema = false

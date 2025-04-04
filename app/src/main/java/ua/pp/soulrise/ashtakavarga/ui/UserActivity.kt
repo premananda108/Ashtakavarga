@@ -3,6 +3,8 @@ package ua.pp.soulrise.ashtakavarga.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -37,6 +39,7 @@ class UserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         editTextName = findViewById(R.id.editTextName)
         editTextDateOfBirth = findViewById(R.id.editTextDateOfBirth)
@@ -148,6 +151,21 @@ class UserActivity : AppCompatActivity() {
             runOnUiThread {
                 userAdapter.setUsers(users)
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_help -> {
+                startActivity(Intent(this, HelpActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

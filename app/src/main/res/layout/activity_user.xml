@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:padding="16dp">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_layout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -15,7 +23,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <EditText
+    <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,13 +56,13 @@
         android:id="@+id/buttonAddUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Добавить пользователя" />
+        android:text="Добавить клиента вручную" />
 
     <Button
         android:id="@+id/importButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Импорт пользователя" />
+        android:text="Автоматический импорт информации по клиенту" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/usersRecyclerView"

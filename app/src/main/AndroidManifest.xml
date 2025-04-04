@@ -45,6 +45,11 @@
             android:exported="false"> <!-- Или exported="true", если хотите, чтобы PlanetSignActivity могли запускать другие приложения -->
         </activity>
 
+        <activity
+            android:name=".ui.HelpActivity"
+            android:exported="false">
+        </activity>
+
     </application>
 
 </manifest>

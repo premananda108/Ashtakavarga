@@ -9,8 +9,11 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels // Для viewModels делегата
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
@@ -75,7 +78,23 @@ data class ZodiacPlanetData(
 )
 
 class MainActivity : AppCompatActivity() {
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_help -> {
+                startActivity(Intent(this, HelpActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
     private lateinit var binding: ActivityMainBinding
+    private lateinit var toolbar: androidx.appcompat.widget.Toolbar
     private var userId: Long = 1 // Default value
     private val viewModel: MainViewModel by viewModels {
         MainViewModel.MainViewModelFactory(
@@ -296,6 +315,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        // Настройка тулбара
+        setSupportActionBar(binding.toolbar.root)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        //supportActionBar?.title = "Аштакаварга"
 
         // Get userId from intent extras
         handleIntent(intent)

@@ -34,7 +34,6 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    // Удалите buildFeatures { compose = true } и composeOptions { ... } если они были
     viewBinding {
         enable = true
     }
