@@ -1,19 +1,38 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Ashtakavarga" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/light_peach</item>
+        <item name="colorPrimaryVariant">@color/brown</item>
         <item name="colorOnPrimary">@color/brown</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item> <!-- Может отличаться -->
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/gold</item>
+        <item name="colorSecondaryVariant">@color/cyan</item>
+        <item name="colorOnSecondary">@color/brown</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+
+        <!-- Настройка стиля текста Toolbar -->
+        <item name="titleTextStyle">@style/ToolbarTitleTextStyle</item>
+        <item name="subtitleTextStyle">@style/ToolbarSubtitleTextStyle</item>
+
+        <!-- **Строки для изменения цвета пунктов меню на коричневый** -->
+        <item name="actionMenuTextColor">@color/brown</item> <!-- Цвет текста пунктов меню -->
+        <item name="colorControlNormal">@color/brown</item>   <!-- Цвет иконок пунктов меню -->
+
     </style>
 
     <style name="Theme.Ashtakavarga" parent="Base.Theme.Ashtakavarga">
+        <item name="titleTextStyle">@style/ToolbarTitleTextStyle</item>
+    </style>
+
+    <!-- Стиль для заголовка Toolbar -->
+    <style name="ToolbarTitleTextStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textColor">@color/brown</item>
+    </style>
+
+    <!-- Стиль для подзаголовка Toolbar -->
+    <style name="ToolbarSubtitleTextStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textColor">@color/brown</item>
     </style>
 </resources>
